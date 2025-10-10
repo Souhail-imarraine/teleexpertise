@@ -18,6 +18,7 @@ public abstract class utilisateur {
     public utilisateur(){
 
     }
+
     public utilisateur(int id, String nom, String prenom, String email, String motDePasse, String role) {
         this.id = id;
         this.nom = nom;
