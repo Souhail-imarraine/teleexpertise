@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "infirmiers")
 public class Infirmier extends utilisateur {
-
     public Infirmier() {
-
     }
 
     public Infirmier(int id, String nom, String prenom, String email, String motDePasse, String role) {
