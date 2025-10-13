@@ -125,6 +125,14 @@
                 </svg>
             </button>
         </form>
+        <!-- Lien vers inscription - NOUVEAU -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Vous n'avez pas de compte ?
+                <a href="${pageContext.request.contextPath}/register" class="font-semibold text-black hover:underline">Créer un compte</a>
+            </p>
+        </div>
+
 
         <!-- Footer -->
         <div class="mt-8 text-center">

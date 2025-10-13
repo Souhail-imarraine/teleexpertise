@@ -33,7 +33,6 @@ public class UtilisateurDAO {
             // Identifiants corrects
             return user;
         }
-
         // Email ou mot de passe incorrect
         return null;
     }
