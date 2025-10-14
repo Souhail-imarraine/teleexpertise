@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -73,11 +74,36 @@
             <p class="text-gray-600 mt-2">Accédez à votre espace professionnel</p>
         </div>
 
+        <!-- Message de succès -->
+        <c:if test="${not empty sessionScope.successMessage}">
+        <div class="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><c:out value="${sessionScope.successMessage}"/></span>
+            </div>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+        </c:if>
+
+        <!-- Message d'erreur -->
+        <c:if test="${not empty error}">
+        <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <span><c:out value="${error}"/></span>
+            </div>
+        </div>
+        </c:if>
+
         <!-- Formulaire -->
         <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
             <div>
                 <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Nom d'utilisateur
+                    Nom d'utilisateur <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -87,14 +113,15 @@
                         </svg>
                     </div>
                     <input type="text" id="username" name="username" required
-                           class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg transition"
+                           value="${not empty username ? username : ''}"
+                           class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg transition focus:border-black focus:outline-none"
                            placeholder="Entrez votre nom d'utilisateur"/>
                 </div>
             </div>
 
             <div>
                 <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Mot de passe
+                    Mot de passe <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -103,15 +130,15 @@
                                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
                     </div>
-                    <input type="password" id="password" name="password" required
-                           class="w-full pl-10 pr-4 py-3 rounded-lg transition"
+                    <input type="password" id="password" name="password" required minlength="6"
+                           class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg transition focus:border-black focus:outline-none"
                            placeholder="Entrez votre mot de passe"/>
                 </div>
             </div>
 
             <div class="flex items-center justify-between">
                 <label class="flex items-center">
-                    <input type="checkbox" class="w-4 h-4 border-gray-300 rounded text-black focus:ring-black"/>
+                    <input type="checkbox" name="rememberMe" class="w-4 h-4 border-gray-300 rounded text-black focus:ring-black"/>
                     <span class="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
                 </label>
                 <a href="#" class="text-sm font-semibold text-black hover:underline">Mot de passe oublié ?</a>
@@ -125,14 +152,14 @@
                 </svg>
             </button>
         </form>
-        <!-- Lien vers inscription - NOUVEAU -->
+
+        <!-- Lien vers inscription -->
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 Vous n'avez pas de compte ?
                 <a href="${pageContext.request.contextPath}/register" class="font-semibold text-black hover:underline">Créer un compte</a>
             </p>
         </div>
-
 
         <!-- Footer -->
         <div class="mt-8 text-center">
@@ -149,7 +176,7 @@
                       d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                       clip-rule="evenodd"/>
             </svg>
-            <span>Connexion sécurisée SSL</span>
+            <span>Connexion sécurisée SSL avec BCrypt</span>
         </div>
     </div>
 </div>

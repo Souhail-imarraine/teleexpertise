@@ -6,13 +6,12 @@ import jakarta.persistence.Persistence;
 
 public class JpaUtil {
     private static EntityManagerFactory entityManagerFactory;
-
     static {
         try {
             entityManagerFactory = Persistence.createEntityManagerFactory("teleexpertisePU");
-            System.out.println("✅ EntityManagerFactory créé avec succès!");
+            System.out.println("EntityManagerFactory créé avec succès!");
         } catch (Exception e) {
-            System.err.println("❌ Erreur lors de la création de l'EntityManagerFactory: " + e.getMessage());
+            System.err.println("Erreur lors de la création de l'EntityManagerFactory: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -31,7 +30,7 @@ public class JpaUtil {
     public static void close() {
         if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
             entityManagerFactory.close();
-            System.out.println("✅ EntityManagerFactory fermé");
+            System.out.println("EntityManagerFactory fermé");
         }
     }
 

@@ -13,7 +13,6 @@ import java.io.IOException;
 
 @WebServlet("/index")
 public class LoginServlet extends HttpServlet {
-
     private AuthService authService;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

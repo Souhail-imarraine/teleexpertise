@@ -5,6 +5,7 @@ import com.example.teleexpertise.model.Infirmier;
 import com.example.teleexpertise.model.Generaliste;
 import com.example.teleexpertise.model.Specialiste;
 import com.example.teleexpertise.util.JpaUtil;
+import com.example.teleexpertise.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
@@ -18,7 +19,7 @@ public class UtilisateurDAO {
                 "SELECT u FROM utilisateur u WHERE u.email = :email",
                 utilisateur.class
             )
-            .setParameter("email", email)  // Remplace :email par la valeur
+            .setParameter("email", email)
             .getSingleResult();
 
         } catch (NoResultException e) {
@@ -29,9 +30,12 @@ public class UtilisateurDAO {
     public utilisateur authenticate(String email, String motDePasse) {
         utilisateur user = findByEmail(email);
 
-        if (user != null && user.getMotDePasse().equals(motDePasse)) {
-            // Identifiants corrects
-            return user;
+        if (user != null) {
+            // Utiliser BCrypt pour vérifier le mot de passe
+            if (PasswordUtil.checkPassword(motDePasse, user.getMotDePasse())) {
+                // Mot de passe correct
+                return user;
+            }
         }
         // Email ou mot de passe incorrect
         return null;
@@ -64,5 +68,22 @@ public class UtilisateurDAO {
                 return null;
         }
     }
-}
 
+    public void save(utilisateur user) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            System.out.println("Utilisateur sauvegardé avec succès dans la BD");
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            System.err.println("Erreur lors de la sauvegarde: " + e.getMessage());
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+}
