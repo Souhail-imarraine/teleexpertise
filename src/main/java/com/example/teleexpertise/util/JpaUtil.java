@@ -40,13 +40,12 @@ public class JpaUtil {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            // Test simple avec une requête native
             em.createNativeQuery("SELECT 1").getSingleResult();
             em.getTransaction().commit();
-            System.out.println("✅ Connexion à la bcase de données réussie!");
+            System.out.println("Connexion à la bcase de données réussie!");
             return true;
         } catch (Exception e) {
-            System.err.println("❌ Erreur de connexion à la base de données: " + e.getMessage());
+            System.err.println("Erreur de connexion à la base de données: " + e.getMessage());
             e.printStackTrace();
             if (em != null && em.getTransaction().isActive()) {
                 em.getTransaction().rollback();

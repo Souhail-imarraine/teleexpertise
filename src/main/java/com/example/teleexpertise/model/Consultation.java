@@ -37,7 +37,7 @@ public class Consultation {
     @Column(length = 2000)
     private String traitement;
 
-    private Double coutBase = 150.0; // Coût fixe de 150 DH
+    private Double coutBase = 150.0;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

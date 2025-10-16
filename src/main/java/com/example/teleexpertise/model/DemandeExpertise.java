@@ -1,7 +1,9 @@
 package com.example.teleexpertise.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+
 import com.example.teleexpertise.model.enums.PrioriteExpertise;
 import com.example.teleexpertise.model.enums.StatutExpertise;
 import com.example.teleexpertise.model.enums.ModeExpertise;
@@ -63,7 +65,7 @@ public class DemandeExpertise {
     }
 
     public DemandeExpertise(Consultation consultation, Generaliste generaliste, Specialiste specialiste,
-                           String questionPosee, PrioriteExpertise priorite) {
+                            String questionPosee, PrioriteExpertise priorite) {
         this.consultation = consultation;
         this.generaliste = generaliste;
         this.specialiste = specialiste;

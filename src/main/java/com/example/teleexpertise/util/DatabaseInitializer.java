@@ -15,7 +15,9 @@ public class DatabaseInitializer {
 
         EntityManagerFactory emf = null;
 
+
         try {
+
             System.out.println("📡 Connexion à MySQL via XAMPP...");
 
             // Cette ligne va créer automatiquement toutes les tables
@@ -41,7 +43,7 @@ public class DatabaseInitializer {
             System.out.println("==================================================");
 
         } catch (Exception e) {
-            System.err.println("\n❌ ERREUR lors de la création des tables :");
+            System.err.println("\n ERREUR lors de la création des tables :");
             System.err.println("Message : " + e.getMessage());
             e.printStackTrace();
 

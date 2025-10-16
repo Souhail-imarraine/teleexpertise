@@ -16,49 +16,81 @@ public class AuthService {
         this.utilisateurDAO = new UtilisateurDAO();
     }
 
-    public utilisateur login(String email, String motDePasse) {
+    public utilisateur authenticate(String email, String password) throws Exception {
         // Validation des entrées
-        if(email == null || email.trim().isEmpty()){
-            System.out.println("❌ Email vide");
-            return null;
+        if (email == null || email.trim().isEmpty()) {
+            throw new Exception("L'email ne peut pas être vide");
         }
-
-        if (motDePasse == null || motDePasse.trim().isEmpty()) {
-            System.out.println("❌ Mot de passe vide");
-            return null;
+        if (password == null || password.trim().isEmpty()) {
+            throw new Exception("Le mot de passe ne peut pas être vide");
         }
-
-        utilisateur user = utilisateurDAO.authenticate(email.trim(), motDePasse);
-
-        if (user != null) {
-            System.out.println("✅ Authentification réussie pour : " + user.getEmail());
-            System.out.println("   Rôle : " + user.getRole());
-        } else {
-            System.out.println("❌ Échec authentification pour : " + email);
+        // Authenticate user
+        utilisateur user = utilisateurDAO.authenticate(email.trim(), password);
+        if (user == null) {
+            throw new Exception("Email ou mot de passe incorrect");
         }
-
         return user;
     }
 
-    public void register(String nom, String prenom, String email, String motDePasse, String role, String specialite) throws Exception {
-        // Validation des entrées
+    public String getRedirectUrlByRole(String role) {
+        if (role == null) {
+            return "/login";
+        }
+
+        switch (role.toUpperCase()) {
+            case "INFIRMIER":
+                return "/infirmier/dashboard";
+            case "GENERALISTE":
+            case "MEDECIN":
+                return "/generaliste/dashboard";
+            case "SPECIALISTE":
+                return "/specialiste/dashboard";
+            default:
+                return "/login";
+        }
+    }
+
+
+    public void registerUser(String nom, String prenom, String email, String motDePasse,
+                            String confirmPassword, String role, String specialite) throws Exception {
+        // Validate password confirmation
+        if (motDePasse == null || !motDePasse.equals(confirmPassword)) {
+            throw new Exception("Les mots de passe ne correspondent pas");
+        }
+
+        // Validate specialty for specialists
+        if ("SPECIALISTE".equalsIgnoreCase(role) && (specialite == null || specialite.trim().isEmpty())) {
+            throw new Exception("Veuillez sélectionner une spécialité médicale");
+        }
+
+        // Validate all fields
         validateName(nom, prenom);
         validateEmail(email);
         validatePassword(motDePasse);
-        validRole(role);
+        validateRole(role);
 
-        utilisateur newUser;
+        // Create user based on role
+        utilisateur newUser = createUserByRole(role, specialite);
+
+        // Set common fields
+        newUser.setNom(nom);
+        newUser.setPrenom(prenom);
+        newUser.setEmail(email);
+        newUser.setMotDePasse(PasswordUtil.hashPassword(motDePasse));
+        newUser.setRole(role.toUpperCase());
+
+        // Save user
+        utilisateurDAO.save(newUser);
+    }
+
+    private utilisateur createUserByRole(String role, String specialite) throws Exception {
         switch (role.toUpperCase()) {
             case "INFIRMIER":
-                newUser = new Infirmier();
-                break;
+                return new Infirmier();
             case "GENERALISTE":
-            case "MEDECIN":
-                newUser = new Generaliste();
-                break;
+                return new Generaliste();
             case "SPECIALISTE":
                 Specialiste specialisteUser = new Specialiste();
-                // Valider et assigner la spécialité
                 if (specialite != null && !specialite.trim().isEmpty()) {
                     try {
                         TypeSpecialite typeSpec = TypeSpecialite.valueOf(specialite.toUpperCase());
@@ -66,60 +98,55 @@ public class AuthService {
                     } catch (IllegalArgumentException e) {
                         throw new Exception("Spécialité invalide : " + specialite);
                     }
-                } else if ("SPECIALISTE".equalsIgnoreCase(role)) {
-                    throw new Exception("La spécialité est obligatoire pour les spécialistes");
                 }
-
                 specialisteUser.setTarif(TARIF_PAR_DEFAUT);
+                return specialisteUser;
 
-                newUser = specialisteUser;
-                break;
             default:
                 throw new Exception("Rôle invalide");
         }
-
-        newUser.setNom(nom);
-        newUser.setPrenom(prenom);
-        newUser.setEmail(email);
-
-        String hashedPassword = PasswordUtil.hashPassword(motDePasse);
-        newUser.setMotDePasse(hashedPassword);
-
-        newUser.setRole(role.toUpperCase());
-
-        // Sauvegarder l'utilisateur dans la base de données
-        utilisateurDAO.save(newUser);
-        System.out.println("✅ Utilisateur enregistré avec mot de passe haché : " + email);
     }
 
-    public void validateEmail(String email) throws Exception {
+
+    private void validateEmail(String email) throws Exception {
         if (email == null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
             throw new Exception("Email invalide");
-        }else if(utilisateurDAO.findByEmail(email) != null){
+        }
+
+        if (utilisateurDAO.findByEmail(email) != null) {
             throw new Exception("Email déjà utilisé");
         }
     }
 
-    public void validatePassword(String password) throws Exception {
+    /**
+     * Validate password strength
+     */
+    private void validatePassword(String password) throws Exception {
         if (password == null || password.length() < 6) {
             throw new Exception("Le mot de passe doit contenir au moins 6 caractères");
         }
     }
 
-    public void validateName(String name, String prenom) throws Exception {
-        if (name == null || prenom == null || name.trim().isEmpty() || prenom.trim().isEmpty()) {
+    /**
+     * Validate name format
+     */
+    private void validateName(String nom, String prenom) throws Exception {
+        if (nom == null || prenom == null || nom.trim().isEmpty() || prenom.trim().isEmpty()) {
             throw new Exception("Le nom et le prénom ne peuvent pas être vides");
-        }else if (!name.matches("^[a-zA-ZÀ-ÿ '-]+$") || !prenom.matches("^[a-zA-ZÀ-ÿ '-]+$")) {
+        }
+
+        if (!nom.matches("^[a-zA-ZÀ-ÿ '-]+$") || !prenom.matches("^[a-zA-ZÀ-ÿ '-]+$")) {
             throw new Exception("Le nom ou le prénom contient des caractères invalides");
         }
     }
 
-    public void validRole(String role) throws Exception {
+    /**
+     * Validate role
+     */
+    private void validateRole(String role) throws Exception {
         if (role == null || !(role.equalsIgnoreCase("INFIRMIER") ||
                              role.equalsIgnoreCase("GENERALISTE") ||
-                             role.equalsIgnoreCase("MEDECIN") ||
-                             role.equalsIgnoreCase("SPECIALISTE") ||
-                             role.equalsIgnoreCase("RADIOLOGUE"))) {
+                             role.equalsIgnoreCase("SPECIALISTE"))) {
             throw new Exception("Rôle invalide");
         }
     }

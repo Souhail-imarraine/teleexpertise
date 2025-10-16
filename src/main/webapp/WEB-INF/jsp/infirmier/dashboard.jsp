@@ -1,347 +1,458 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <title>Dashboard Infirmier - Télé-Expertise Médicale</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Infirmier - Télé-Expertise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Remove outline on all inputs and buttons */
+        input:focus, textarea:focus, button:focus, select:focus {
+            outline: none !important;
+        }
+
+        /* Smooth transitions */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            transition: all 0.2s ease;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
-        /* HEADER */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
         }
 
-        .header h1 {
-            font-size: 24px;
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-info span {
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        /* CONTAINER */
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* WELCOME CARD */
-        .welcome-card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .welcome-card h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .welcome-card p {
-            color: #666;
-        }
-
-        /* STATS CARDS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-icon {
-            font-size: 40px;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-        }
-
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .stat-icon.green {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .stat-icon.orange {
-            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
-        }
-
-        .stat-content h3 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .stat-content p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        /* ACTIONS GRID */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .action-card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-
-        .action-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .action-card .icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-
-        .action-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .action-card p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .btn-action {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-
-        .btn-action:hover {
-            transform: scale(1.05);
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
     </style>
 </head>
-<body>
-    <!-- HEADER -->
-    <div class="header">
-        <h1>👨‍⚕️ Dashboard Infirmier</h1>
-        <div class="user-info">
-            <span>👤 ${sessionScope.userName}</span>
-            <a href="${pageContext.request.contextPath}/logout" class="btn-logout">Déconnexion</a>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden fixed top-4 left-4 z-50">
+        <button id="mobile-menu-btn" class="bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100">
+            <svg class="h-6 w-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 border-r border-gray-200">
+        <!-- Logo -->
+        <div class="flex items-center h-16 px-6 bg-black border-b border-gray-800">
+            <div class="flex items-center">
+                <div class="bg-white p-2 rounded-lg">
+                    <svg class="h-5 w-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="ml-3 text-white font-bold text-lg">TéléMed</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-6 px-3">
+            <div class="space-y-1">
+                <a href="${pageContext.request.contextPath}/infirmier/dashboard"
+                   class="bg-black text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <svg class="text-white mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+
+                <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                   class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                    Accueil Patient
+                </a>
+
+                <a href="${pageContext.request.contextPath}/infirmier/patients"
+                   class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    Patients du Jour
+                </a>
+            </div>
+        </nav>
+
+        <!-- User Info -->
+        <div class="absolute bottom-0 w-full p-4 border-t border-gray-200 bg-white">
+            <div class="flex items-center mb-3">
+                <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-semibold text-sm">
+                    <c:out value="${sessionScope.userName.substring(0,1).toUpperCase()}"/>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-900"><c:out value="${sessionScope.userName}"/></p>
+                    <p class="text-xs text-gray-500">Infirmier(ère)</p>
+                </div>
+            </div>
+            <a href="${pageContext.request.contextPath}/logout"
+               class="w-full bg-gray-900 hover:bg-black text-white font-medium py-2 px-4 rounded-lg text-sm flex items-center justify-center">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Déconnexion
+            </a>
         </div>
     </div>
 
-    <!-- CONTAINER -->
-    <div class="container">
-        <!-- WELCOME CARD -->
-        <div class="welcome-card">
-            <h2>Bienvenue, ${sessionScope.userName} !</h2>
-            <p>Vous êtes connecté en tant qu'<strong>Infirmier</strong>. Voici votre tableau de bord.</p>
-        </div>
+    <!-- Overlay -->
+    <div id="overlay" class="hidden lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"></div>
 
-        <!-- STATS -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon blue">👥</div>
-                <div class="stat-content">
-                    <h3>0</h3>
-                    <p>Patients en attente</p>
+    <!-- Main Content -->
+    <div class="lg:ml-64">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Dashboard Infirmier</h1>
+                        <p class="text-sm text-gray-600 mt-1">Vue d'ensemble de l'activité quotidienne</p>
+                    </div>
+                    <div class="hidden sm:flex items-center space-x-2 text-sm font-medium text-gray-900">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span id="current-date"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-4 sm:p-6 lg:p-8">
+            <!-- Quick Actions -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Actions Rapides
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Action 1: US1 - Accueil Patient -->
+                    <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                       class="group bg-white border-2 border-gray-300 rounded-xl p-6 hover:shadow-xl hover:border-black transition-all duration-200">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-black rounded-lg p-3 group-hover:scale-110 transition-transform">
+                                    <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-gray-900">Accueillir un Patient</h4>
+                                    <span class="text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">US1</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3 font-medium">Rechercher ou créer un nouveau dossier patient</p>
+                                <div class="flex items-center text-black text-sm font-bold">
+                                    <span>Commencer</span>
+                                    <svg class="h-4 w-4 ml-1 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Action 2: US2 - Liste Patients -->
+                    <a href="${pageContext.request.contextPath}/infirmier/patients"
+                       class="group bg-white border-2 border-gray-300 rounded-xl p-6 hover:shadow-xl hover:border-black transition-all duration-200">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-black rounded-lg p-3 group-hover:scale-110 transition-transform">
+                                    <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-gray-900">Patients du Jour</h4>
+                                    <span class="text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">US2</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3 font-medium">Liste complète triée par heure d'arrivée</p>
+                                <div class="flex items-center text-black text-sm font-bold">
+                                    <span>Voir la liste</span>
+                                    <svg class="h-4 w-4 ml-1 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon green">✅</div>
-                <div class="stat-content">
-                    <h3>0</h3>
-                    <p>Patients enregistrés aujourd'hui</p>
+            <!-- Recent Activity -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Derniers Enregistrements
+                    </h3>
+                    <a href="${pageContext.request.contextPath}/infirmier/patients" class="text-sm text-black hover:text-gray-700 font-bold flex items-center">
+                        <span>Voir Tout</span>
+                        <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="divide-y divide-gray-200">
+                        <!-- Patient 1 -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <div class="relative">
+                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-base">
+                                            AB
+                                        </div>
+                                        <span class="absolute -bottom-1 -right-1 bg-gray-900 border-2 border-white rounded-full h-4 w-4"></span>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-bold text-gray-900">Ahmed Bennani</h4>
+                                            <span class="ml-2 text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">
+                                                Enregistré
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center mt-1 space-x-3 text-xs font-medium text-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Il y a 5 minutes
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">TA:</span>
+                                                <span class="ml-1">120/80 mmHg</span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">FC:</span>
+                                                <span class="ml-1">72 bpm</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Patient 2 -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <div class="relative">
+                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-base">
+                                            FZ
+                                        </div>
+                                        <span class="absolute -bottom-1 -right-1 bg-gray-500 border-2 border-white rounded-full h-4 w-4"></span>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-bold text-gray-900">Fatima Zahrae</h4>
+                                            <span class="ml-2 text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">
+                                                En attente
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center mt-1 space-x-3 text-xs font-medium text-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Il y a 12 minutes
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">TA:</span>
+                                                <span class="ml-1">115/75 mmHg</span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">FC:</span>
+                                                <span class="ml-1">68 bpm</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Patient 3 -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <div class="relative">
+                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-base">
+                                            MK
+                                        </div>
+                                        <span class="absolute -bottom-1 -right-1 bg-gray-700 border-2 border-white rounded-full h-4 w-4"></span>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-bold text-gray-900">Mohamed Karim</h4>
+                                            <span class="ml-2 text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">
+                                                Consulté
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center mt-1 space-x-3 text-xs font-medium text-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Il y a 25 minutes
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">TA:</span>
+                                                <span class="ml-1">130/85 mmHg</span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">FC:</span>
+                                                <span class="ml-1">78 bpm</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Patient 4 -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <div class="relative">
+                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-base">
+                                            SA
+                                        </div>
+                                        <span class="absolute -bottom-1 -right-1 bg-gray-900 border-2 border-white rounded-full h-4 w-4"></span>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-bold text-gray-900">Sara Alami</h4>
+                                            <span class="ml-2 text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">
+                                                Enregistré
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center mt-1 space-x-3 text-xs font-medium text-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Il y a 35 minutes
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">TA:</span>
+                                                <span class="ml-1">118/76 mmHg</span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">FC:</span>
+                                                <span class="ml-1">70 bpm</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Patient 5 -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <div class="relative">
+                                        <div class="bg-black text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-base">
+                                            YM
+                                        </div>
+                                        <span class="absolute -bottom-1 -right-1 bg-gray-700 border-2 border-white rounded-full h-4 w-4"></span>
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="flex items-center">
+                                            <h4 class="text-sm font-bold text-gray-900">Youssef Mansouri</h4>
+                                            <span class="ml-2 text-xs bg-gray-200 text-gray-900 px-2.5 py-1 rounded-lg font-bold border border-gray-300">
+                                                Consulté
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center mt-1 space-x-3 text-xs font-medium text-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Il y a 48 minutes
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">TA:</span>
+                                                <span class="ml-1">125/82 mmHg</span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <span class="font-bold text-gray-900">FC:</span>
+                                                <span class="ml-1">75 bpm</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-icon orange">🏥</div>
-                <div class="stat-content">
-                    <h3>0</h3>
-                    <p>Consultations en cours</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ACTIONS -->
-        <div class="actions-grid">
-            <div class="action-card">
-                <div class="icon">➕</div>
-                <h3>Enregistrer un patient</h3>
-                <p>Ajouter un nouveau patient ou mettre à jour les signes vitaux d'un patient existant</p>
-                <a href="${pageContext.request.contextPath}/infirmier/patient/nouveau" class="btn-action">
-                    Commencer
-                </a>
-            </div>
-
-            <div class="action-card">
-                <div class="icon">📋</div>
-                <h3>Liste des patients</h3>
-                <p>Voir tous les patients enregistrés aujourd'hui avec leurs signes vitaux</p>
-                <a href="${pageContext.request.contextPath}/infirmier/patients" class="btn-action">
-                    Voir la liste
-                </a>
-            </div>
-
-            <div class="action-card">
-                <div class="icon">⏰</div>
-                <h3>File d'attente</h3>
-                <p>Gérer la file d'attente des patients en attente de consultation</p>
-                <a href="${pageContext.request.contextPath}/infirmier/file-attente" class="btn-action">
-                    Gérer
-                </a>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        // Animation au chargement
-        window.addEventListener('load', function() {
-            const cards = document.querySelectorAll('.stat-card, .action-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
 
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 100);
-            });
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // Display current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
     </script>
 </body>
 </html>
-package com.example.teleexpertise.controller;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
-
-/**
- * Servlet Dashboard - Point d'entrée après connexion
- * Redirige vers le dashboard approprié selon le rôle
- *
- * EXPLICATION :
- * - Après connexion, l'utilisateur arrive sur /dashboard
- * - Le servlet vérifie le rôle dans la session
- * - Redirige vers le dashboard spécifique (infirmier, generaliste, specialiste)
- */
-@WebServlet(name = "DashboardServlet", urlPatterns = {"/dashboard"})
-public class DashboardServlet extends HttpServlet {
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        // Vérifier si l'utilisateur est connecté
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute("user") == null) {
-            // Pas de session → Redirection vers login
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
-        // Récupérer le rôle depuis la session
-        String role = (String) session.getAttribute("userRole");
-
-        // Redirection selon le rôle
-        switch (role) {
-            case "INFIRMIER":
-                response.sendRedirect(request.getContextPath() + "/infirmier/dashboard");
-                break;
-            case "GENERALISTE":
-                response.sendRedirect(request.getContextPath() + "/generaliste/dashboard");
-                break;
-            case "SPECIALISTE":
-                response.sendRedirect(request.getContextPath() + "/specialiste/dashboard");
-                break;
-            default:
-                response.sendRedirect(request.getContextPath() + "/login");
-        }
-    }
-}
-

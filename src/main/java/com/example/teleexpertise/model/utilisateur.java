@@ -15,8 +15,7 @@ public abstract class utilisateur {
     protected String motDePasse;
     protected String role;
 
-    public utilisateur(){
-
+    public utilisateur() {
     }
 
     public utilisateur(int id, String nom, String prenom, String email, String motDePasse, String role) {
@@ -75,6 +74,5 @@ public abstract class utilisateur {
     public void setRole(String role) {
         this.role = role;
     }
-
 
 }
