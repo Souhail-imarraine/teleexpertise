@@ -1,4 +1,4 @@
-package com.example.teleexpertise.controller;
+package com.example.teleexpertise.controller.Generaliste;
 
 import com.example.teleexpertise.model.Patient;
 import com.example.teleexpertise.model.utilisateur;

@@ -58,7 +58,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <span class="ml-3 text-white font-bold text-lg">TéléMed</span>
+            <span class="ml-3 text-white font-bold text-lg">teleexpertise</span>
         </div>
     </div>
 
@@ -167,26 +167,51 @@
                 <p class="text-gray-300 text-sm">Recherchez par numéro de sécurité sociale ou nom, puis ajoutez les nouveaux signes vitaux</p>
             </div>
 
+            <!-- Messages -->
+            <c:if test="${not empty infoMessage}">
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-blue-800">${infoMessage}</p>
+                    </div>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty searchErrorMessage}">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-red-800">${searchErrorMessage}</p>
+                    </div>
+                </div>
+            </c:if>
+
             <!-- Search Form -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <span class="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">1</span>
                     Rechercher le Patient
                 </h3>
-                <form class="space-y-4">
+                <form action="${pageContext.request.contextPath}/infirmier/rechercher-patient" method="post" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold text-gray-900 mb-2">Numéro de Sécurité Sociale</label>
-                            <input type="text" placeholder="Exemple : 1234567890123"
+                            <input type="text" name="numeroSecuriteSociale" placeholder="Exemple : 1234567890123"
+                                   value="${param.numeroSecuriteSociale}"
                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-900 mb-2">Ou Rechercher par Nom</label>
-                            <input type="text" placeholder="Nom du patient"
+                            <input type="text" name="searchTerm" placeholder="Nom ou prénom du patient"
+                                   value="${param.searchTerm}"
                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                         </div>
                     </div>
-                    <button type="button" onclick="showPatientInfo()"
+                    <button type="submit"
                             class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center shadow-lg">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -196,154 +221,243 @@
                 </form>
             </div>
 
-            <!-- Patient Info (Hidden by default) -->
-            <div id="patient-info" class="hidden space-y-6">
-                <!-- Patient Info Display -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6 pb-4 border-b border-gray-200">
-                        <div class="bg-black text-white p-3 rounded-lg">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="text-lg font-bold text-gray-900">Patient Trouvé</h3>
-                            <p class="text-sm text-gray-600">Informations du dossier médical</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Nom Complet</p>
-                            <p class="text-base font-bold text-gray-900">Ahmed Bennani</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Date de Naissance</p>
-                            <p class="text-base font-bold text-gray-900">15/03/1980</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">N° Sécurité Sociale</p>
-                            <p class="text-base font-bold text-gray-900">1234567890123</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="bg-gray-50 border-l-4 border-gray-900 p-4 rounded">
-                            <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                Antécédents Médicaux
-                            </h4>
-                            <p class="text-sm text-gray-700 font-medium">Hypertension, Diabète type 2</p>
-                        </div>
-
-                        <div class="bg-gray-50 border-l-4 border-gray-400 p-4 rounded">
-                            <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                </svg>
-                                Allergies Connues
-                            </h4>
-                            <p class="text-sm text-gray-700 font-medium">Pénicilline, Arachides</p>
-                        </div>
-
-                        <div class="bg-gray-50 border-l-4 border-gray-600 p-4 rounded">
-                            <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                                </svg>
-                                Traitements en Cours
-                            </h4>
-                            <p class="text-sm text-gray-700 font-medium">Metformine 850mg (2x/jour), Ramipril 5mg (1x/jour)</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add Vital Signs Form -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">2</span>
-                        Ajouter les Nouveaux Signes Vitaux
+            <!-- Multiple Patients Result (Show when multiple patients found) -->
+            <c:if test="${not empty patientsRecherche && multiplePatients}">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <svg class="h-6 w-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        Sélectionnez le Patient
                     </h3>
-                    <form class="space-y-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <!-- TA -->
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Tension Artérielle
-                                </label>
-                                <div class="flex space-x-2">
-                                    <input type="number" placeholder="120" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                    <span class="flex items-center text-gray-900 font-bold text-lg">/</span>
-                                    <input type="number" placeholder="80" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                    <div class="grid grid-cols-1 gap-4">
+                        <c:forEach var="p" items="${patientsRecherche}">
+                            <a href="${pageContext.request.contextPath}/infirmier/rechercher-patient?patientId=${p.id}"
+                               class="block bg-gray-50 hover:bg-gray-100 border-2 border-gray-300 hover:border-black rounded-lg p-4 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-base">
+                                            ${p.nom.substring(0,1).toUpperCase()}${p.prenom.substring(0,1).toUpperCase()}
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-base font-bold text-gray-900">
+                                                <c:out value="${p.prenom}"/> <c:out value="${p.nom}"/>
+                                            </div>
+                                            <div class="text-sm text-gray-600 mt-1">
+                                                <span class="font-semibold">N° SS:</span> <c:out value="${p.numeroSecuriteSociale}"/>
+                                            </div>
+                                            <c:if test="${not empty p.dateNaissance}">
+                                                <div class="text-xs text-gray-500 mt-1">
+                                                    <span class="font-semibold">Né(e) le:</span> <c:out value="${p.dateNaissance}"/>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
                                 </div>
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">mmHg</p>
-                            </div>
-
-                            <!-- FC -->
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Fréquence Cardiaque
-                                </label>
-                                <input type="number" placeholder="75" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">battements/min</p>
-                            </div>
-
-                            <!-- Temp -->
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Température
-                                </label>
-                                <input type="number" step="0.1" placeholder="37.2" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">°C</p>
-                            </div>
-
-                            <!-- FR -->
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Fréq. Respiratoire
-                                </label>
-                                <input type="number" placeholder="16" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">respirations/min</p>
-                            </div>
-                        </div>
-
-                        <!-- Optional -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Poids (optionnel)
-                                </label>
-                                <input type="number" step="0.1" placeholder="70.5" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">kg</p>
-                            </div>
-
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">
-                                    Taille (optionnel)
-                                </label>
-                                <input type="number" placeholder="175" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <p class="text-xs text-gray-600 mt-2 font-semibold">cm</p>
-                            </div>
-                        </div>
-
-                        <!-- Submit -->
-                        <div class="bg-gray-50 border-l-4 border-black p-5 rounded-lg">
-                            <p class="text-sm text-gray-700 mb-4 font-medium">
-                                ✅ Le patient sera ajouté à la file d'attente avec le statut <span class="bg-gray-200 text-gray-900 px-2 py-1 rounded font-bold">EN_ATTENTE</span>
-                            </p>
-                            <button type="submit"
-                                    class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center shadow-lg">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
-                                Enregistrer et Ajouter à la File d'Attente
-                            </button>
-                        </div>
-                    </form>
+                            </a>
+                        </c:forEach>
+                    </div>
                 </div>
-            </div>
+            </c:if>
+
+            <!-- Patient Info (Show when patient found) -->
+            <c:if test="${not empty patient && patientExistant}">
+                <div id="patient-info" class="space-y-6">
+                    <!-- Patient Info Display -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center mb-6 pb-4 border-b border-gray-200">
+                            <div class="bg-black text-white p-3 rounded-lg">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-bold text-gray-900">✅ Patient Trouvé</h3>
+                                <p class="text-sm text-gray-600">Informations du dossier médical</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Nom Complet</p>
+                                <p class="text-base font-bold text-gray-900">
+                                    <c:out value="${patient.prenom}"/> <c:out value="${patient.nom}"/>
+                                </p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Date de Naissance</p>
+                                <p class="text-base font-bold text-gray-900">
+                                    <c:choose>
+                                        <c:when test="${not empty patient.dateNaissance}">
+                                            <c:out value="${patient.dateNaissance}"/>
+                                        </c:when>
+                                        <c:otherwise>Non renseignée</c:otherwise>
+                                    </c:choose>
+                                </p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">N° Sécurité Sociale</p>
+                                <p class="text-base font-bold text-gray-900"><c:out value="${patient.numeroSecuriteSociale}"/></p>
+                            </div>
+                        </div>
+
+                        <c:if test="${not empty patient.telephone || not empty patient.adresse}">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <c:if test="${not empty patient.telephone}">
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Téléphone</p>
+                                        <p class="text-base font-bold text-gray-900"><c:out value="${patient.telephone}"/></p>
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty patient.adresse}">
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <p class="text-xs font-semibold text-gray-500 mb-1 uppercase">Adresse</p>
+                                        <p class="text-base font-bold text-gray-900"><c:out value="${patient.adresse}"/></p>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </c:if>
+
+                        <div class="space-y-3">
+                            <c:if test="${not empty patient.antecedents}">
+                                <div class="bg-gray-50 border-l-4 border-gray-900 p-4 rounded">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        Antécédents Médicaux
+                                    </h4>
+                                    <p class="text-sm text-gray-700 font-medium"><c:out value="${patient.antecedents}"/></p>
+                                </div>
+                            </c:if>
+
+                            <c:if test="${not empty patient.allergies}">
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                        ⚠️ Allergies Connues
+                                    </h4>
+                                    <p class="text-sm text-red-800 font-bold"><c:out value="${patient.allergies}"/></p>
+                                </div>
+                            </c:if>
+
+                            <c:if test="${not empty patient.traitementsEnCours}">
+                                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-2 flex items-center">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                        </svg>
+                                        Traitements en Cours
+                                    </h4>
+                                    <p class="text-sm text-gray-700 font-medium"><c:out value="${patient.traitementsEnCours}"/></p>
+                                </div>
+                            </c:if>
+                        </div>
+                    </div>
+
+                    <!-- Add Vital Signs Form -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span class="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">2</span>
+                            Ajouter les Nouveaux Signes Vitaux
+                        </h3>
+                        <form action="${pageContext.request.contextPath}/infirmier/mettre-a-jour-patient" method="post" class="space-y-6">
+                            <input type="hidden" name="patientId" value="${patient.id}"/>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <!-- TA -->
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Tension Artérielle
+                                    </label>
+                                    <input type="text" name="tensionArterielle" placeholder="120/80"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">Format: 120/80 mmHg</p>
+                                </div>
+
+                                <!-- FC -->
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Fréquence Cardiaque
+                                    </label>
+                                    <input type="number" name="frequenceCardiaque" placeholder="75" min="40" max="200"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">battements/min</p>
+                                </div>
+
+                                <!-- Temp -->
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Température
+                                    </label>
+                                    <input type="number" name="temperature" step="0.1" placeholder="37.2" min="35" max="42"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">°C</p>
+                                </div>
+
+                                <!-- FR -->
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Fréq. Respiratoire
+                                    </label>
+                                    <input type="number" name="frequenceRespiratoire" placeholder="16" min="10" max="40"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">respirations/min</p>
+                                </div>
+                            </div>
+
+                            <!-- Optional -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Poids (optionnel)
+                                    </label>
+                                    <input type="number" name="poids" step="0.1" placeholder="70.5" min="1" max="300"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">kg</p>
+                                </div>
+
+                                <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">
+                                        Taille (optionnel)
+                                    </label>
+                                    <input type="number" name="taille" placeholder="175" min="50" max="250"
+                                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                                    <p class="text-xs text-gray-600 mt-2 font-semibold">cm</p>
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="bg-gray-50 border-l-4 border-black p-5 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-4 font-medium">
+                                    ✅ Le patient sera ajouté à la file d'attente avec le statut <span class="bg-gray-200 text-gray-900 px-2 py-1 rounded font-bold">EN_ATTENTE</span>
+                                </p>
+                                <div class="flex gap-3">
+                                    <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                                       class="flex-1 bg-white border-2 border-gray-300 hover:border-gray-900 text-gray-900 font-bold py-3 px-6 rounded-lg flex items-center justify-center">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                        Nouvelle Recherche
+                                    </a>
+                                    <button type="submit"
+                                            class="flex-1 bg-black hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center shadow-lg">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Enregistrer et Ajouter à la File d'Attente
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </c:if>
         </div>
 
         <!-- Scénario B : Nouveau Patient -->
@@ -360,7 +474,19 @@
                 <p class="text-gray-300 text-sm">Complétez toutes les informations administratives, médicales et les signes vitaux</p>
             </div>
 
-            <form class="space-y-6">
+            <!-- Messages -->
+            <c:if test="${not empty errorMessage}">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+                    <div class="flex">
+                        <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-red-800">${errorMessage}</p>
+                    </div>
+                </div>
+            </c:if>
+
+            <form action="${pageContext.request.contextPath}/infirmier/ajouter-patient" method="post" class="space-y-6">
                 <!-- Données Administratives -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-5 flex items-center pb-3 border-b border-gray-200">
@@ -382,20 +508,16 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-900 mb-2">N° Sécurité Sociale <span class="text-black">*</span></label>
-                            <input type="text" name="numSecuriteSociale" required placeholder="13 chiffres" maxlength="13" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+                            <input type="text" name="numeroSecuriteSociale" required placeholder="13 chiffres" maxlength="13" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-900 mb-2">Téléphone</label>
                             <input type="tel" name="telephone" placeholder="Exemple : 0612345678" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-900 mb-2">Mutuelle</label>
-                            <input type="text" name="mutuelle" placeholder="Exemple : CNSS" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+                            <label class="block text-sm font-bold text-gray-900 mb-2">Adresse Complète</label>
+                            <input type="text" name="adresse" placeholder="Exemple : 123 Rue Mohammed V, Casablanca" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                         </div>
-                    </div>
-                    <div class="mt-4">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Adresse Complète</label>
-                        <input type="text" name="adresse" placeholder="Exemple : 123 Rue Mohammed V, Casablanca" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
                     </div>
                 </div>
 
@@ -410,8 +532,6 @@
                             <label class="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                Antécédents Médicaux
                             </label>
                             <textarea name="antecedents" rows="3" placeholder="Maladies passées, opérations, hospitalisations..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
                         </div>
@@ -420,8 +540,6 @@
                             <label class="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                </svg>
-                                Allergies Connues
                             </label>
                             <textarea name="allergies" rows="2" placeholder="Médicaments, aliments, autres allergies..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
                         </div>
@@ -430,10 +548,8 @@
                             <label class="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                                </svg>
-                                Traitements en Cours
                             </label>
-                            <textarea name="traitements" rows="2" placeholder="Médicaments actuels avec posologie..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
+                            <textarea name="traitementsEnCours" rows="2" placeholder="Médicaments actuels avec posologie..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
                         </div>
                     </div>
                 </div>
@@ -448,40 +564,36 @@
                         <!-- Tension Artérielle -->
                         <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
                             <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Tension Artérielle <span class="text-black">*</span>
+                                Tension Artérielle
                             </label>
-                            <div class="flex items-center space-x-2">
-                                <input type="number" name="tensionSystolique" placeholder="120" required min="80" max="200" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                                <span class="text-gray-900 font-bold text-lg">/</span>
-                                <input type="number" name="tensionDiastolique" placeholder="80" required min="40" max="130" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
-                            </div>
-                            <p class="text-xs text-gray-600 mt-2 font-semibold">mmHg</p>
+                            <input type="text" name="tensionArterielle" placeholder="120/80" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                            <p class="text-xs text-gray-600 mt-2 font-semibold">Format: 120/80 mmHg</p>
                         </div>
 
                         <!-- Fréquence Cardiaque -->
                         <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
                             <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Fréquence Cardiaque <span class="text-black">*</span>
+                                Fréquence Cardiaque
                             </label>
-                            <input type="number" name="frequenceCardiaque" placeholder="75" required min="40" max="200" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                            <input type="number" name="frequenceCardiaque" placeholder="75" min="40" max="200" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
                             <p class="text-xs text-gray-600 mt-2 font-semibold">battements/min</p>
                         </div>
 
                         <!-- Température -->
                         <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
                             <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Température <span class="text-black">*</span>
+                                Température
                             </label>
-                            <input type="number" name="temperature" step="0.1" placeholder="37.2" required min="35" max="42" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                            <input type="number" name="temperature" step="0.1" placeholder="37.2" min="35" max="42" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
                             <p class="text-xs text-gray-600 mt-2 font-semibold">°C</p>
                         </div>
 
                         <!-- Fréquence Respiratoire -->
                         <div class="bg-white p-4 rounded-lg border-2 border-gray-300 hover:border-gray-900">
                             <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Fréq. Respiratoire <span class="text-black">*</span>
+                                Fréq. Respiratoire
                             </label>
-                            <input type="number" name="frequenceRespiratoire" placeholder="16" required min="10" max="40" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
+                            <input type="number" name="frequenceRespiratoire" placeholder="16" min="10" max="40" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-semibold">
                             <p class="text-xs text-gray-600 mt-2 font-semibold">respirations/min</p>
                         </div>
                     </div>

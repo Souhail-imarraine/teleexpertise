@@ -57,7 +57,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <span class="ml-3 text-white font-bold text-lg">TéléMed</span>
+                <span class="ml-3 text-white font-bold text-lg">teleexpertise</span>
             </div>
         </div>
 
@@ -126,41 +126,42 @@
 
         <!-- Content -->
         <main class="p-4 sm:p-6 lg:p-8">
-            <!-- Filters -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                    </svg>
-                    Filtrer les Patients
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Rechercher</label>
-                        <input type="text" placeholder="Nom ou N° Sécurité Sociale..."
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+            <!-- Success Message -->
+            <c:if test="${not empty sessionScope.successMessage}">
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-green-800">${sessionScope.successMessage}</p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Statut</label>
-                        <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
-                            <option value="">Tous les statuts</option>
-                            <option value="EN_ATTENTE">EN_ATTENTE</option>
-                            <option value="EN_CONSULTATION">EN_CONSULTATION</option>
-                            <option value="TERMINE">TERMINÉ</option>
-                        </select>
+                </div>
+                <c:remove var="successMessage" scope="session"/>
+            </c:if>
+
+            <!-- Error Message -->
+            <c:if test="${not empty errorMessage}">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-red-800">${errorMessage}</p>
                     </div>
+                </div>
+            </c:if>
+
+            <!-- Stats Card -->
+            <div class="bg-gradient-to-r from-gray-900 to-black rounded-xl shadow-lg p-6 mb-6">
+                <div class="flex items-center justify-between text-white">
                     <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Période</label>
-                        <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
-                            <option value="">Toute la journée</option>
-                            <option value="matin">Matin (08h-12h)</option>
-                            <option value="apres-midi">Après-midi (12h-18h)</option>
-                        </select>
+                        <h3 class="text-sm font-semibold text-gray-300 uppercase">Patients Enregistrés Aujourd'hui</h3>
+                        <p class="text-4xl font-bold mt-2">${nombrePatients != null ? nombrePatients : 0}</p>
                     </div>
-                    <div class="flex items-end">
-                        <button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg">
-                            Appliquer les Filtres
-                        </button>
+                    <div class="bg-white/20 p-4 rounded-lg">
+                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -173,17 +174,14 @@
                             <h3 class="text-lg font-bold text-white">Liste des Patients Enregistrés</h3>
                             <p class="text-sm text-gray-300 mt-1">Date : <span id="current-date"></span></p>
                         </div>
-                        <div class="mt-3 sm:mt-0 flex items-center space-x-2">
-                            <button class="p-2 text-white hover:bg-white/20 rounded-lg">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        <div class="mt-3 sm:mt-0">
+                            <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                               class="inline-flex items-center bg-white text-black hover:bg-gray-100 font-bold py-2 px-4 rounded-lg text-sm">
+                                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                 </svg>
-                            </button>
-                            <button class="p-2 text-white hover:bg-white/20 rounded-lg">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                                </svg>
-                            </button>
+                                Ajouter Patient
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -216,322 +214,241 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Patient 1 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-base">
-                                            AB
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-bold text-gray-900">Ahmed Bennani</div>
-                                            <div class="text-xs font-medium text-gray-500">45 ans • N° 1234567890123</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <svg class="h-5 w-5 text-gray-900 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-900">08:30</div>
-                                            <div class="text-xs font-medium text-gray-500">il y a 1h30</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="space-y-1 text-xs">
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">TA:</span>
-                                            <span class="font-semibold text-gray-700">120/80 mmHg</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FC:</span>
-                                            <span class="font-semibold text-gray-700">72 bpm</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">Temp:</span>
-                                            <span class="font-semibold text-gray-700">37.2°C</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FR:</span>
-                                            <span class="font-semibold text-gray-700">16 rpm</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border-2 border-gray-300">
-                                        EN_ATTENTE
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                        Voir Détails
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Patient 2 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-base">
-                                            FZ
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-bold text-gray-900">Fatima Zahrae</div>
-                                            <div class="text-xs font-medium text-gray-500">32 ans • N° 2345678901234</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <svg class="h-5 w-5 text-gray-900 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-900">09:15</div>
-                                            <div class="text-xs font-medium text-gray-500">il y a 45min</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="space-y-1 text-xs">
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">TA:</span>
-                                            <span class="font-semibold text-gray-700">115/75 mmHg</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FC:</span>
-                                            <span class="font-semibold text-gray-700">68 bpm</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">Temp:</span>
-                                            <span class="font-semibold text-gray-700">36.8°C</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FR:</span>
-                                            <span class="font-semibold text-gray-700">14 rpm</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border-2 border-gray-300">
-                                        EN_CONSULTATION
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                        Voir Détails
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Patient 3 -->
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-base">
-                                            MK
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-bold text-gray-900">Mohamed Karim</div>
-                                            <div class="text-xs font-medium text-gray-500">28 ans • N° 3456789012345</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <svg class="h-5 w-5 text-gray-900 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-900">09:45</div>
-                                            <div class="text-xs font-medium text-gray-500">il y a 15min</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="space-y-1 text-xs">
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">TA:</span>
-                                            <span class="font-semibold text-gray-700">130/85 mmHg</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FC:</span>
-                                            <span class="font-semibold text-gray-700">78 bpm</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">Temp:</span>
-                                            <span class="font-semibold text-gray-700">37.5°C</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-16 font-bold text-gray-900">FR:</span>
-                                            <span class="font-semibold text-gray-700">18 rpm</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border-2 border-gray-300">
-                                        TERMINÉ
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                        Voir Détails
-                                    </button>
-                                </td>
-                            </tr>
+                            <c:choose>
+                                <c:when test="${empty patients}">
+                                    <!-- No patients -->
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-12 text-center">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <svg class="h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                                </svg>
+                                                <h3 class="text-lg font-bold text-gray-900 mb-2">Aucun patient enregistré aujourd'hui</h3>
+                                                <p class="text-sm text-gray-600 mb-4">Commencez par ajouter un nouveau patient</p>
+                                                <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                                                   class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg">
+                                                    Ajouter un Patient
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <!-- Display patients -->
+                                    <c:forEach var="patient" items="${patients}">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-base">
+                                                        ${patient.nom.substring(0,1).toUpperCase()}${patient.prenom.substring(0,1).toUpperCase()
+                                                        }
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-bold text-gray-900">
+                                                            <c:out value="${patient.prenom}"/> <c:out value="${patient.nom}"/>
+                                                        </div>
+                                                        <div class="text-xs font-medium text-gray-500">
+                                                            <c:if test="${not empty patient.dateNaissance}">
+                                                                <jsp:useBean id="now" class="java.util.Date"/>
+                                                                ${now.year - patient.dateNaissance.year} ans •
+                                                            </c:if>
+                                                            N° <c:out value="${patient.numeroSecuriteSociale}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <svg class="h-5 w-5 text-gray-900 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    </svg>
+                                                    <div>
+                                                        <div class="text-sm font-bold text-gray-900">
+                                                            <c:if test="${not empty patient.heureArrivee}">
+                                                                ${patient.heureArrivee.hour}:${patient.heureArrivee.minute < 10 ? '0' : ''}${patient.heureArrivee.minute}
+                                                            </c:if>
+                                                        </div>
+                                                        <div class="text-xs font-medium text-gray-500">
+                                                            <c:out value="${patient.dateEnregistrement}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="space-y-1 text-xs">
+                                                    <c:if test="${not empty patient.tensionArterielle}">
+                                                        <div class="flex items-center">
+                                                            <span class="w-16 font-bold text-gray-900">TA:</span>
+                                                            <span class="font-semibold text-gray-700"><c:out value="${patient.tensionArterielle}"/> mmHg</span>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${not empty patient.frequenceCardiaque}">
+                                                        <div class="flex items-center">
+                                                            <span class="w-16 font-bold text-gray-900">FC:</span>
+                                                            <span class="font-semibold text-gray-700"><c:out value="${patient.frequenceCardiaque}"/> bpm</span>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${not empty patient.temperature}">
+                                                        <div class="flex items-center">
+                                                            <span class="w-16 font-bold text-gray-900">Temp:</span>
+                                                            <span class="font-semibold text-gray-700"><c:out value="${patient.temperature}"/>°C</span>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${not empty patient.frequenceRespiratoire}">
+                                                        <div class="flex items-center">
+                                                            <span class="w-16 font-bold text-gray-900">FR:</span>
+                                                            <span class="font-semibold text-gray-700"><c:out value="${patient.frequenceRespiratoire}"/> rpm</span>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${empty patient.tensionArterielle && empty patient.frequenceCardiaque && empty patient.temperature && empty patient.frequenceRespiratoire}">
+                                                        <span class="text-gray-500 italic">Non renseignés</span>
+                                                    </c:if>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <c:choose>
+                                                    <c:when test="${patient.statut == 'EN_ATTENTE'}">
+                                                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-yellow-100 text-yellow-800 border-2 border-yellow-300">
+                                                            🕐 EN_ATTENTE
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${patient.statut == 'EN_CONSULTATION'}">
+                                                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-100 text-blue-800 border-2 border-blue-300">
+                                                            👨‍⚕️ EN_CONSULTATION
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${patient.statut == 'TERMINE'}">
+                                                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-green-100 text-green-800 border-2 border-green-300">
+                                                            ✓ TERMINÉ
+                                                        </span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border-2 border-gray-300">
+                                                            <c:out value="${patient.statut}"/>
+                                                        </span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="px-6 py-4 text-right">
+                                                <button onclick="viewPatientDetails(${patient.id})"
+                                                        class="bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
+                                                    Voir Détails
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Mobile Cards -->
                 <div class="md:hidden divide-y divide-gray-200">
-                    <!-- Patient Card 1 -->
-                    <div class="p-4 hover:bg-gray-50">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center">
-                                <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
-                                    AB
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-sm font-bold text-gray-900">Ahmed Bennani</div>
-                                    <div class="text-xs font-medium text-gray-500">45 ans • N° 1234...</div>
-                                </div>
-                            </div>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border border-gray-300">
-                                EN_ATTENTE
-                            </span>
-                        </div>
-                        <div class="bg-gray-50 border-l-4 border-black p-3 mb-3">
-                            <div class="flex items-center text-xs font-medium text-gray-900">
-                                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <c:choose>
+                        <c:when test="${empty patients}">
+                            <!-- No patients -->
+                            <div class="p-8 text-center">
+                                <svg class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                 </svg>
-                                <span class="font-bold">Arrivée: 08:30</span>
-                                <span class="ml-2 text-gray-500">(il y a 1h30)</span>
+                                <h3 class="text-base font-bold text-gray-900 mb-2">Aucun patient</h3>
+                                <p class="text-sm text-gray-600 mb-4">Ajoutez votre premier patient</p>
+                                <a href="${pageContext.request.contextPath}/infirmier/accueil"
+                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-lg text-sm">
+                                    Ajouter un Patient
+                                </a>
                             </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">TA:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">120/80</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FC:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">72 bpm</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">Temp:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">37.2°C</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FR:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">16 rpm</span>
-                            </div>
-                        </div>
-                        <button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg">
-                            Voir Détails Complets
-                        </button>
-                    </div>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- Patient Cards -->
+                            <c:forEach var="patient" items="${patients}">
+                                <div class="p-4 hover:bg-gray-50">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex items-center">
+                                            <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                                                ${patient.nom.substring(0,1).toUpperCase()}${patient.prenom.substring(0,1).toUpperCase()}
+                                            </div>
+                                            <div class="ml-3">
+                                                <div class="text-sm font-bold text-gray-900">
+                                                    <c:out value="${patient.prenom}"/> <c:out value="${patient.nom}"/>
+                                                </div>
+                                                <div class="text-xs font-medium text-gray-500">
+                                                    N° <c:out value="${patient.numeroSecuriteSociale.substring(0,7)}"/>...
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <c:choose>
+                                            <c:when test="${patient.statut == 'EN_ATTENTE'}">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-300">
+                                                    EN_ATTENTE
+                                                </span>
+                                            </c:when>
+                                            <c:when test="${patient.statut == 'EN_CONSULTATION'}">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                                                    EN_CONSULTATION
+                                                </span>
+                                            </c:when>
+                                            <c:when test="${patient.statut == 'TERMINE'}">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-green-100 text-green-800 border border-green-300">
+                                                    TERMINÉ
+                                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border border-gray-300">
+                                                    <c:out value="${patient.statut}"/>
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
 
-                    <!-- Patient Card 2 -->
-                    <div class="p-4 hover:bg-gray-50">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center">
-                                <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
-                                    FZ
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-sm font-bold text-gray-900">Fatima Zahrae</div>
-                                    <div class="text-xs font-medium text-gray-500">32 ans • N° 2345...</div>
-                                </div>
-                            </div>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border border-gray-300">
-                                EN_CONSULTATION
-                            </span>
-                        </div>
-                        <div class="bg-gray-50 border-l-4 border-black p-3 mb-3">
-                            <div class="flex items-center text-xs font-medium text-gray-900">
-                                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <span class="font-bold">Arrivée: 09:15</span>
-                                <span class="ml-2 text-gray-500">(il y a 45min)</span>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">TA:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">115/75</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FC:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">68 bpm</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">Temp:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">36.8°C</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FR:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">14 rpm</span>
-                            </div>
-                        </div>
-                        <button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg">
-                            Voir Détails Complets
-                        </button>
-                    </div>
+                                    <div class="bg-gray-50 border-l-4 border-black p-3 mb-3">
+                                        <div class="flex items-center text-xs font-medium text-gray-900 mb-2">
+                                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Arrivée:
+                                            <c:if test="${not empty patient.heureArrivee}">
+                                                ${patient.heureArrivee.hour}:${patient.heureArrivee.minute < 10 ? '0' : ''}${patient.heureArrivee.minute}
+                                            </c:if>
+                                        </div>
 
-                    <!-- Patient Card 3 -->
-                    <div class="p-4 hover:bg-gray-50">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center">
-                                <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
-                                    MK
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <c:if test="${not empty patient.tensionArterielle}">
+                                                <div>
+                                                    <span class="font-bold text-gray-900">TA:</span>
+                                                    <span class="text-gray-700"> <c:out value="${patient.tensionArterielle}"/></span>
+                                                </div>
+                                            </c:if>
+                                            <c:if test="${not empty patient.frequenceCardiaque}">
+                                                <div>
+                                                    <span class="font-bold text-gray-900">FC:</span>
+                                                    <span class="text-gray-700"> <c:out value="${patient.frequenceCardiaque}"/> bpm</span>
+                                                </div>
+                                            </c:if>
+                                            <c:if test="${not empty patient.temperature}">
+                                                <div>
+                                                    <span class="font-bold text-gray-900">Temp:</span>
+                                                    <span class="text-gray-700"> <c:out value="${patient.temperature}"/>°C</span>
+                                                </div>
+                                            </c:if>
+                                            <c:if test="${not empty patient.frequenceRespiratoire}">
+                                                <div>
+                                                    <span class="font-bold text-gray-900">FR:</span>
+                                                    <span class="text-gray-700"> <c:out value="${patient.frequenceRespiratoire}"/> rpm</span>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
+
+                                    <button onclick="viewPatientDetails(${patient.id})"
+                                            class="w-full bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                        Voir Détails Complets
+                                    </button>
                                 </div>
-                                <div class="ml-3">
-                                    <div class="text-sm font-bold text-gray-900">Mohamed Karim</div>
-                                    <div class="text-xs font-medium text-gray-500">28 ans • N° 3456...</div>
-                                </div>
-                            </div>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-900 border border-gray-300">
-                                TERMINÉ
-                            </span>
-                        </div>
-                        <div class="bg-gray-50 border-l-4 border-black p-3 mb-3">
-                            <div class="flex items-center text-xs font-medium text-gray-900">
-                                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <span class="font-bold">Arrivée: 09:45</span>
-                                <span class="ml-2 text-gray-500">(il y a 15min)</span>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">TA:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">130/85</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FC:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">78 bpm</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">Temp:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">37.5°C</span>
-                            </div>
-                            <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                                <span class="text-xs font-bold text-gray-900">FR:</span>
-                                <span class="text-xs font-semibold text-gray-700 ml-1">18 rpm</span>
-                            </div>
-                        </div>
-                        <button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg">
-                            Voir Détails Complets
-                        </button>
-                    </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </main>
@@ -554,12 +471,18 @@
         });
 
         // Display current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        const dateElement = document.getElementById('current-date');
+        if (dateElement) {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('fr-FR', options);
+        }
+
+        // View patient details
+        function viewPatientDetails(patientId) {
+            // TODO: Implement patient details modal or redirect
+            alert('Détails du patient #' + patientId + ' - À implémenter');
+        }
     </script>
 </body>
 </html>
