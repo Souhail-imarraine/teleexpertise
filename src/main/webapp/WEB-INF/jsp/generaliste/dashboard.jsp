@@ -64,30 +64,6 @@
                 </svg>
                 Dashboard
             </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/patients"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                Patients en Attente
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/consultations"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Mes Consultations
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/expertises"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                Demandes d'Expertise
-            </a>
         </div>
     </nav>
 
@@ -148,69 +124,6 @@
             <c:remove var="successMessage" scope="session"/>
         </c:if>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Patients en Attente -->
-            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-yellow-100 uppercase">En Attente</p>
-                        <p class="text-4xl font-bold mt-2">${nombrePatientsEnAttente != null ? nombrePatientsEnAttente : 0}</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Patients -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-blue-100 uppercase">Total du Jour</p>
-                        <p class="text-4xl font-bold mt-2">${nombrePatientsTotal != null ? nombrePatientsTotal : 0}</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Consultations -->
-            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-green-100 uppercase">Consultations</p>
-                        <p class="text-4xl font-bold mt-2">0</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Expertises -->
-            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-purple-100 uppercase">Expertises</p>
-                        <p class="text-4xl font-bold mt-2">0</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Quick Actions -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
@@ -219,7 +132,7 @@
                 </svg>
                 Actions Rapides
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                 <a href="${pageContext.request.contextPath}/generaliste/nouvelle-consultation"
                    class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-black to-gray-800 hover:from-gray-800 hover:to-black text-white rounded-xl shadow-lg transform hover:scale-105 transition-all">
                     <svg class="h-12 w-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,12 +149,20 @@
                     <span class="font-bold text-center text-gray-900">Voir Patients</span>
                 </a>
 
+                <a href="${pageContext.request.contextPath}/generaliste/expertises"
+                   class="flex flex-col items-center justify-center p-6 bg-white hover:bg-gray-50 border-2 border-gray-300 hover:border-black rounded-xl shadow transform hover:scale-105 transition-all">
+                    <svg class="h-12 w-12 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-bold text-center text-gray-900">Mes demandes d'expertise</span>
+                </a>
+
                 <a href="${pageContext.request.contextPath}/generaliste/demander-expertise"
                    class="flex flex-col items-center justify-center p-6 bg-white hover:bg-gray-50 border-2 border-gray-300 hover:border-black rounded-xl shadow transform hover:scale-105 transition-all">
                     <svg class="h-12 w-12 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
-                    <span class="font-bold text-center text-gray-900">Demander Expertise</span>
+                    <span class="font-bold text-center text-gray-900">Demander une Expertise</span>
                 </a>
 
                 <a href="${pageContext.request.contextPath}/generaliste/consultations"
@@ -251,94 +172,6 @@
                     </svg>
                     <span class="font-bold text-center text-gray-900">Mes Consultations</span>
                 </a>
-            </div>
-        </div>
-
-        <!-- Patients en Attente -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-900 to-black">
-                <h3 class="text-lg font-bold text-white flex items-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Patients en Attente (${nombrePatientsEnAttente != null ? nombrePatientsEnAttente : 0})
-                </h3>
-                <p class="text-sm text-gray-300 mt-1">Cliquez sur un patient pour démarrer la consultation</p>
-            </div>
-
-            <div class="overflow-x-auto">
-                <c:choose>
-                    <c:when test="${empty patientsEnAttente}">
-                        <div class="p-12 text-center">
-                            <svg class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Aucun patient en attente</h3>
-                            <p class="text-sm text-gray-600">Tous les patients ont été pris en charge</p>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase">Patient</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase">Heure d'Arrivée</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase">Signes Vitaux</th>
-                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-900 uppercase">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <c:forEach var="patient" items="${patientsEnAttente}">
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center">
-                                                <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold">
-                                                    ${patient.nom.substring(0,1).toUpperCase()}${patient.prenom.substring(0,1).toUpperCase()}
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-bold text-gray-900">
-                                                        <c:out value="${patient.prenom}"/> <c:out value="${patient.nom}"/>
-                                                    </div>
-                                                    <div class="text-xs text-gray-500">
-                                                        N° <c:out value="${patient.numeroSecuriteSociale}"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center text-sm">
-                                                <svg class="h-4 w-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                </svg>
-                                                <c:if test="${not empty patient.heureArrivee}">
-                                                    <span class="font-semibold text-gray-900">
-                                                        ${patient.heureArrivee.hour}:${patient.heureArrivee.minute < 10 ? '0' : ''}${patient.heureArrivee.minute}
-                                                    </span>
-                                                </c:if>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-xs space-y-1">
-                                                <c:if test="${not empty patient.tensionArterielle}">
-                                                    <div><span class="font-bold">TA:</span> ${patient.tensionArterielle}</div>
-                                                </c:if>
-                                                <c:if test="${not empty patient.temperature}">
-                                                    <div><span class="font-bold">T°:</span> ${patient.temperature}°C</div>
-                                                </c:if>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <a href="${pageContext.request.contextPath}/generaliste/consulter?patientId=${patient.id}"
-                                               class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                                Consulter
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </c:otherwise>
-                </c:choose>
             </div>
         </div>
     </main>

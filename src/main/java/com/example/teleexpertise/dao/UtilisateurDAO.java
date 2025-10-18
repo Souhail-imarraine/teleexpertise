@@ -7,36 +7,22 @@ import com.example.teleexpertise.model.Specialiste;
 import com.example.teleexpertise.util.JpaUtil;
 import com.example.teleexpertise.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 
 /**
- * DAO pour l'entité utilisateur
+ * DAO pour l'entité utilisateur - Hérite de GenericDAOImpl
  */
-public class UtilisateurDAO {
+public class UtilisateurDAO extends GenericDAOImpl<utilisateur> {
 
-    /**
-     * Sauvegarder un utilisateur
-     */
-    public void save(utilisateur user) {
-        EntityManager em = JpaUtil.getEntityManager();
-        EntityTransaction transaction = null;
-
-        try {
-            transaction = em.getTransaction();
-            transaction.begin();
-            em.persist(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw e;
-        } finally {
-            em.close();
-        }
+    public UtilisateurDAO() {
+        super(utilisateur.class);
     }
 
+    // ✅ save(), update(), findById(), findAll(), deleteById() sont HÉRITÉS
+
+    /**
+     * Trouver un utilisateur par email
+     */
     public utilisateur findByEmail(String email) {
         EntityManager em = JpaUtil.getEntityManager();
         try {

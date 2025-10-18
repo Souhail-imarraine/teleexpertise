@@ -45,30 +45,6 @@
                 </svg>
                 Dashboard
             </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/patients"
-               class="bg-black text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-white mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                Patients en Attente
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/consultations"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Mes Consultations
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/expertises"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                Demandes d'Expertise
-            </a>
         </div>
     </nav>
 
@@ -93,7 +69,6 @@
 </div>
 
 <div id="overlay" class="hidden lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"></div>
-
 <!-- Main Content -->
 <div class="lg:ml-64">
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
@@ -117,19 +92,11 @@
     <main class="p-4 sm:p-6 lg:p-8">
         <!-- Filters -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-900 mb-2">Rechercher</label>
                     <input type="text" id="searchInput" placeholder="Nom, prénom, N° sécurité sociale..."
                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-black">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-900 mb-2">Trier par</label>
-                    <select id="sortSelect" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-black">
-                        <option value="time">Heure d'arrivée</option>
-                        <option value="name">Nom</option>
-                        <option value="priority">Priorité</option>
-                    </select>
                 </div>
                 <div class="flex items-end">
                     <button onclick="refreshList()" class="w-full bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg flex items-center justify-center">
@@ -141,52 +108,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-yellow-100 uppercase">En Attente</p>
-                        <p class="text-4xl font-bold mt-2">12</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-green-100 uppercase">Consultés</p>
-                        <p class="text-4xl font-bold mt-2">28</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-blue-100 uppercase">Temps Moyen</p>
-                        <p class="text-4xl font-bold mt-2">15 min</p>
-                    </div>
-                    <div class="bg-white/20 p-4 rounded-lg">
-                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Patients List -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-900 to-black">
@@ -194,7 +115,7 @@
                     <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    Liste des Patients
+                    Liste des Patients (${totalEnAttente != null ? totalEnAttente : 0} patient)
                 </h3>
             </div>
 
@@ -211,88 +132,104 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Example patients -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm">1</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold">MA</div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">Mohammed ALAMI</div>
-                                        <div class="text-xs text-gray-500">N° 1234567890123</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center text-sm">
-                                    <svg class="h-4 w-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span class="font-semibold text-gray-900">08:30</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-xs space-y-1">
-                                    <div><span class="font-bold">TA:</span> 120/80 mmHg</div>
-                                    <div><span class="font-bold">T°:</span> 37.2°C</div>
-                                    <div><span class="font-bold">FC:</span> 72 bpm</div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
-                                    45 min
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="${pageContext.request.contextPath}/generaliste/consulter?patientId=1"
-                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                    Consulter
-                                </a>
-                            </td>
-                        </tr>
+                        <!-- Afficher les patients réels avec JSTL -->
+                        <c:choose>
+                            <c:when test="${empty patients}">
+                                <!-- Si aucun patient -->
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <svg class="h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                            </svg>
+                                            <p class="text-lg font-semibold text-gray-900">Aucun patient en attente</p>
+                                            <p class="text-sm text-gray-500 mt-1">La file d'attente est vide pour le moment</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <!-- Afficher chaque patient -->
+                                <c:forEach var="patient" items="${patients}" varStatus="status">
+                                    <tr class="hover:bg-gray-50">
+                                        <!-- Position -->
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm">
+                                                ${status.index + 1}
+                                            </span>
+                                        </td>
 
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm">2</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold">FE</div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">Fatima ELMOUSSAOUI</div>
-                                        <div class="text-xs text-gray-500">N° 9876543210987</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center text-sm">
-                                    <svg class="h-4 w-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span class="font-semibold text-gray-900">09:15</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-xs space-y-1">
-                                    <div><span class="font-bold">TA:</span> 130/85 mmHg</div>
-                                    <div><span class="font-bold">T°:</span> 36.8°C</div>
-                                    <div><span class="font-bold">FC:</span> 78 bpm</div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
-                                    20 min
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="${pageContext.request.contextPath}/generaliste/consulter?patientId=2"
-                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                    Consulter
-                                </a>
-                            </td>
-                        </tr>
+                                        <!-- Patient Info -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <!-- Initiales du patient -->
+                                                <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                                                    ${patient.nom.substring(0,1)}${patient.prenom.substring(0,1)}
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-bold text-gray-900">
+                                                        <c:out value="${patient.nom}"/> <c:out value="${patient.prenom}"/>
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        N° <c:out value="${patient.numeroSecuriteSociale}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Heure d'arrivée -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center text-sm">
+                                                <svg class="h-4 w-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                <span class="font-semibold text-gray-900">
+                                                    <c:choose>
+                                                        <c:when test="${patient.heureArrivee != null}">
+                                                            ${patient.heureArrivee.toLocalTime().toString().substring(0,5)}
+                                                        </c:when>
+                                                        <c:otherwise>--:--</c:otherwise>
+                                                    </c:choose>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <!-- Signes vitaux -->
+                                        <td class="px-6 py-4">
+                                            <div class="text-xs space-y-1">
+                                                <div>
+                                                    <span class="font-bold">TA:</span>
+                                                    <c:out value="${patient.tensionArterielle != null ? patient.tensionArterielle : 'N/A'}"/>
+                                                </div>
+                                                <div>
+                                                    <span class="font-bold">T°:</span>
+                                                    <c:out value="${patient.temperature != null ? patient.temperature : 'N/A'}"/>°C
+                                                </div>
+                                                <div>
+                                                    <span class="font-bold">FC:</span>
+                                                    <c:out value="${patient.frequenceCardiaque != null ? patient.frequenceCardiaque : 'N/A'}"/> bpm
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Temps d'attente (approximatif) -->
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                                                En attente
+                                            </span>
+                                        </td>
+
+                                        <!-- Action -->
+                                        <td class="px-6 py-4 text-right">
+                                            <a href="${pageContext.request.contextPath}/generaliste/nouvelle-consultation?patientId=${patient.id}"
+                                               class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
+                                                Consulter
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
             </div>
@@ -318,7 +255,110 @@
     function refreshList() {
         window.location.reload();
     }
+
+    // ========================================
+    // 🔍 RECHERCHE EN TEMPS RÉEL
+    // ========================================
+
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.querySelector('tbody');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+
+    // Fonction de recherche
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+
+        // Si la recherche est vide, afficher tous les patients
+        if (searchTerm === '') {
+            allRows.forEach(row => {
+                row.style.display = '';
+            });
+            updatePatientCount();
+            return;
+        }
+
+        let visibleCount = 0;
+
+        // Parcourir chaque ligne du tableau
+        allRows.forEach(row => {
+            // Récupérer le texte de la ligne (nom, prénom, numéro SS)
+            const rowText = row.textContent.toLowerCase();
+
+            // Vérifier si le texte contient le terme recherché
+            if (rowText.includes(searchTerm)) {
+                row.style.display = ''; // Afficher la ligne
+                visibleCount++;
+
+                // Mettre à jour la position
+                const positionBadge = row.querySelector('td:first-child span');
+                if (positionBadge) {
+                    positionBadge.textContent = visibleCount;
+                }
+            } else {
+                row.style.display = 'none'; // Cacher la ligne
+            }
+        });
+
+        // Afficher un message si aucun résultat
+        if (visibleCount === 0) {
+            showNoResults();
+        } else {
+            hideNoResults();
+        }
+
+        updatePatientCount();
+    });
+
+    // Fonction pour afficher "Aucun résultat"
+    function showNoResults() {
+        hideNoResults(); // D'abord supprimer l'ancien message
+
+        const noResultRow = document.createElement('tr');
+        noResultRow.id = 'no-result-row';
+        noResultRow.innerHTML = `
+            <td colspan="6" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center justify-center">
+                    <svg class="h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <p class="text-lg font-semibold text-gray-900">Aucun résultat trouvé</p>
+                    <p class="text-sm text-gray-500 mt-1">Essayez avec un autre nom, prénom ou numéro</p>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(noResultRow);
+    }
+
+    // Fonction pour cacher "Aucun résultat"
+    function hideNoResults() {
+        const existingNoResult = document.getElementById('no-result-row');
+        if (existingNoResult) {
+            existingNoResult.remove();
+        }
+    }
+
+    // Fonction pour mettre à jour le compteur
+    function updatePatientCount() {
+        const visibleRows = allRows.filter(row => row.style.display !== 'none');
+        const countElement = document.querySelector('.text-lg.font-bold.text-white');
+        if (countElement) {
+            const iconSvg = countElement.querySelector('svg').outerHTML;
+            const count = visibleRows.length;
+            const plural = count > 1 ? 's' : '';
+            countElement.innerHTML = iconSvg + ` Liste des Patients (${count} patient${plural})`;
+        }
+    }
+
+    // Ajouter un indicateur visuel sur le champ de recherche
+    searchInput.addEventListener('focus', function() {
+        this.parentElement.querySelector('label').classList.add('text-black');
+    });
+
+    searchInput.addEventListener('blur', function() {
+        if (this.value === '') {
+            this.parentElement.querySelector('label').classList.remove('text-black');
+        }
+    });
 </script>
 </body>
 </html>
-

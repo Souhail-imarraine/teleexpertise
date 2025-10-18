@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -45,30 +46,6 @@
                 </svg>
                 Dashboard
             </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/patients"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                Patients en Attente
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/consultations"
-               class="bg-black text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-white mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Mes Consultations
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/expertises"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                Demandes d'Expertise
-            </a>
         </div>
     </nav>
 
@@ -100,8 +77,7 @@
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">📋 Mes Consultations</h1>
-                    <p class="text-sm text-gray-600 mt-1">Historique et suivi des consultations</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Mes Consultations</h1>
                 </div>
                 <a href="${pageContext.request.contextPath}/generaliste/nouvelle-consultation"
                    class="bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg flex items-center">
@@ -115,6 +91,25 @@
     </header>
 
     <main class="p-4 sm:p-6 lg:p-8">
+        <!-- Messages de succès/erreur -->
+        <c:if test="${not empty successMessage}">
+            <div class="bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-6 flex items-center">
+                <svg class="h-6 w-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm font-bold text-green-900"><c:out value="${successMessage}"/></p>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty errorMessage}">
+            <div class="bg-red-50 border-2 border-red-500 rounded-lg p-4 mb-6 flex items-center">
+                <svg class="h-6 w-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm font-bold text-red-900"><c:out value="${errorMessage}"/></p>
+            </div>
+        </c:if>
+
         <!-- Filters -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -132,10 +127,6 @@
                         <option value="TERMINEE">Terminée</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-900 mb-2">Date</label>
-                    <input type="date" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-black">
-                </div>
                 <div class="flex items-end">
                     <button class="w-full bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg">
                         Filtrer
@@ -144,64 +135,6 @@
             </div>
         </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-6">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-blue-100 uppercase">Total</p>
-                        <p class="text-3xl font-bold mt-2">156</p>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-yellow-100 uppercase">En Cours</p>
-                        <p class="text-3xl font-bold mt-2">8</p>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-purple-100 uppercase">Avis Demandés</p>
-                        <p class="text-3xl font-bold mt-2">12</p>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-green-100 uppercase">Terminées</p>
-                        <p class="text-3xl font-bold mt-2">136</p>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Consultations List -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -210,7 +143,7 @@
                     <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    Liste des Consultations
+                    Liste des Consultations (${not empty consultations ? consultations.size() : 0})
                 </h3>
             </div>
 
@@ -227,130 +160,130 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Example rows -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">16/10/2025</div>
-                                <div class="text-xs text-gray-500">09:30</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm">MA</div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-bold text-gray-900">Mohammed ALAMI</div>
-                                        <div class="text-xs text-gray-500">N° 1234567890123</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">Douleurs thoraciques</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">
-                                    En attente d'avis
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">450 DH</div>
-                                <div class="text-xs text-gray-500">Consultation + Avis</div>
-                            </td>
-                            <td class="px-6 py-4 text-right space-x-2">
-                                <a href="${pageContext.request.contextPath}/generaliste/consultation/1"
-                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                    Voir
-                                </a>
-                            </td>
-                        </tr>
+                        <c:choose>
+                            <c:when test="${empty consultations}">
+                                <!-- Aucune consultation -->
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center">
+                                        <svg class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <p class="text-lg font-bold text-gray-900 mb-2">Aucune consultation</p>
+                                        <p class="text-sm text-gray-500 mb-4">Vous n'avez pas encore créé de consultation</p>
+                                        <a href="${pageContext.request.contextPath}/generaliste/patients"
+                                           class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg">
+                                            Commencer une consultation
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <!-- Afficher toutes les consultations -->
+                                <c:forEach var="consultation" items="${consultations}">
+                                    <tr class="hover:bg-gray-50">
+                                        <!-- Date -->
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${dateMap[consultation.id]}"/>
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                <c:out value="${timeMap[consultation.id]}"/>
+                                            </div>
+                                        </td>
 
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">16/10/2025</div>
-                                <div class="text-xs text-gray-500">08:15</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm">FE</div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-bold text-gray-900">Fatima ELMOUSSAOUI</div>
-                                        <div class="text-xs text-gray-500">N° 9876543210987</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">Grippe saisonnière</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
-                                    Terminée
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">150 DH</div>
-                                <div class="text-xs text-gray-500">Consultation simple</div>
-                            </td>
-                            <td class="px-6 py-4 text-right space-x-2">
-                                <a href="${pageContext.request.contextPath}/generaliste/consultation/2"
-                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                    Voir
-                                </a>
-                            </td>
-                        </tr>
+                                        <!-- Patient -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                                    <c:out value="${patientInitialsMap[consultation.id]}"/>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-bold text-gray-900">
+                                                        <c:out value="${patientFullNameMap[consultation.id]}"/>
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        N° <c:out value="${patientNssMap[consultation.id]}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
 
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">15/10/2025</div>
-                                <div class="text-xs text-gray-500">14:20</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm">AH</div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-bold text-gray-900">Ahmed HAFIDI</div>
-                                        <div class="text-xs text-gray-500">N° 5678901234567</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">Diabète - suivi</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
-                                    En cours
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-gray-900">250 DH</div>
-                                <div class="text-xs text-gray-500">Consultation + Analyses</div>
-                            </td>
-                            <td class="px-6 py-4 text-right space-x-2">
-                                <a href="${pageContext.request.contextPath}/generaliste/consultation/3"
-                                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
-                                    Continuer
-                                </a>
-                            </td>
-                        </tr>
+                                        <!-- Motif -->
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-900">
+                                                <c:out value="${consultation.motif}"/>
+                                            </div>
+                                        </td>
+
+                                        <!-- Statut avec couleurs dynamiques -->
+                                        <td class="px-6 py-4">
+                                            <c:choose>
+                                                <c:when test="${consultation.statut == 'EN_COURS'}">
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                                                        En cours
+                                                    </span>
+                                                </c:when>
+                                                <c:when test="${consultation.statut == 'EN_ATTENTE_AVIS_SPECIALISTE'}">
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">
+                                                        En attente d'avis
+                                                    </span>
+                                                </c:when>
+                                                <c:when test="${consultation.statut == 'TERMINEE'}">
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                                                        Terminée
+                                                    </span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800">
+                                                        <c:out value="${consultation.statut}"/>
+                                                    </span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+
+                                        <!-- Coût -->
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-bold text-gray-900">
+                                                ${consultation.coutBase} DH
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                <c:choose>
+                                                    <c:when test="${hasDemandeExpertiseMap[consultation.id]}">
+                                                        Consultation + Avis
+                                                    </c:when>
+                                                    <c:when test="${hasActesTechniquesMap[consultation.id]}">
+                                                        Consultation + Actes
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Consultation simple
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                        </td>
+
+                                        <!-- Actions -->
+                                        <td class="px-6 py-4 text-right space-x-2">
+                                            <c:choose>
+                                                <c:when test="${consultation.statut == 'TERMINEE'}">
+                                                    <a href="${pageContext.request.contextPath}/generaliste/consultation/${consultation.id}"
+                                                       class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
+                                                        Voir
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a href="${pageContext.request.contextPath}/generaliste/consultation/${consultation.id}"
+                                                       class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-4 py-2 rounded-lg text-sm">
+                                                        Continuer
+                                                    </a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-700">
-                        Affichage de <span class="font-bold">1</span> à <span class="font-bold">10</span> sur <span class="font-bold">156</span> résultats
-                    </div>
-                    <div class="flex space-x-2">
-                        <button class="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100">
-                            Précédent
-                        </button>
-                        <button class="px-4 py-2 bg-black text-white rounded-lg text-sm font-bold">1</button>
-                        <button class="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100">2</button>
-                        <button class="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100">3</button>
-                        <button class="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100">
-                            Suivant
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
@@ -373,4 +306,3 @@
 </script>
 </body>
 </html>
-

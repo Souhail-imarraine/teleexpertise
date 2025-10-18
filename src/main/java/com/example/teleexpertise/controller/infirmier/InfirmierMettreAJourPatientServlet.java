@@ -12,12 +12,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-/**
- * Servlet pour mettre à jour les signes vitaux d'un patient existant
- */
 @WebServlet("/infirmier/mettre-a-jour-patient")
 public class InfirmierMettreAJourPatientServlet extends HttpServlet {
-
     private final PatientService patientService;
 
     public InfirmierMettreAJourPatientServlet() {

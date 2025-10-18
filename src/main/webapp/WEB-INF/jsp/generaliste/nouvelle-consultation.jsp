@@ -45,30 +45,6 @@
                 </svg>
                 Dashboard
             </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/patients"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                Patients en Attente
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/consultations"
-               class="bg-black text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-white mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Mes Consultations
-            </a>
-
-            <a href="${pageContext.request.contextPath}/generaliste/expertises"
-               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                Demandes d'Expertise
-            </a>
         </div>
     </nav>
 
@@ -100,8 +76,7 @@
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">📋 Nouvelle Consultation</h1>
-                    <p class="text-sm text-gray-600 mt-1">Créer une consultation pour un patient</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Nouvelle Consultation</h1>
                 </div>
                 <a href="${pageContext.request.contextPath}/generaliste/dashboard"
                    class="bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-2 rounded-lg flex items-center">
@@ -121,62 +96,90 @@
                 <div class="flex items-center mb-6">
                     <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">1</div>
                     <div>
-                        <h2 class="text-lg font-bold text-gray-900">Sélectionner un Patient</h2>
-                        <p class="text-sm text-gray-600">Recherchez et sélectionnez le patient</p>
+                        <h2 class="text-lg font-bold text-gray-900">Patient Sélectionné</h2>
+                        <p class="text-sm text-gray-600">Informations du patient pour la consultation</p>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Rechercher un patient</label>
-                        <input type="text" id="patientSearch" placeholder="Nom, prénom ou N° sécurité sociale..."
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-black">
-                    </div>
-
-                    <!-- Patient Selection Results -->
-                    <div id="patientResults" class="hidden">
-                        <div class="border-2 border-gray-200 rounded-lg divide-y divide-gray-200">
-                            <div class="p-4 hover:bg-gray-50 cursor-pointer" onclick="selectPatient(1)">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">MA</div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-bold text-gray-900">Mohammed ALAMI</div>
-                                            <div class="text-xs text-gray-500">N° 1234567890123 | Né le 15/03/1985</div>
+                <!-- Afficher les infos du patient avec JSTL -->
+                <c:choose>
+                    <c:when test="${not empty patient}">
+                        <!-- Patient trouvé - Afficher ses informations -->
+                        <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6">
+                            <div class="flex items-start">
+                                <svg class="h-6 w-6 text-green-600 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="flex-1">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Nom Complet</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.nom}"/> <c:out value="${patient.prenom}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Date de Naissance</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.dateNaissance != null ? patient.dateNaissance : 'N/A'}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">N° Sécurité Sociale</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.numeroSecuriteSociale}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Téléphone</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.telephone != null ? patient.telephone : 'N/A'}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Tension Artérielle</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.tensionArterielle != null ? patient.tensionArterielle : 'N/A'}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Température</div>
+                                            <div class="text-sm font-bold text-gray-900">
+                                                <c:out value="${patient.temperature != null ? patient.temperature : 'N/A'}"/>°C
+                                            </div>
                                         </div>
                                     </div>
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Selected Patient Display -->
-                    <div id="selectedPatient" class="hidden">
-                        <div class="bg-gray-50 border-2 border-green-500 rounded-lg p-4">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <svg class="h-6 w-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="text-sm font-bold text-gray-900">Patient sélectionné: <span id="patientName">Mohammed ALAMI</span></div>
-                                        <div class="text-xs text-gray-500">N° <span id="patientNSS">1234567890123</span></div>
-                                    </div>
-                                </div>
-                                <button onclick="clearPatient()" class="text-red-600 hover:text-red-800 font-bold text-sm">
-                                    Changer
-                                </button>
-                            </div>
+                        <!-- Champ caché pour envoyer l'ID du patient -->
+                        <input type="hidden" name="patientId" value="${patient.id}" />
+                    </c:when>
+                    <c:otherwise>
+                        <!-- Aucun patient sélectionné -->
+                        <div class="bg-red-50 border-2 border-red-300 rounded-lg p-6 text-center">
+                            <svg class="h-12 w-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                            <p class="text-sm font-bold text-red-900">Aucun patient sélectionné</p>
+                            <p class="text-xs text-red-700 mt-1">Veuillez retourner à la liste des patients et sélectionner un patient</p>
+                            <a href="${pageContext.request.contextPath}/generaliste/patients"
+                               class="inline-block mt-4 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg">
+                                Retour aux patients
+                            </a>
                         </div>
-                    </div>
-                </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <!-- Step 2: Consultation Form -->
-            <form id="consultationForm" class="space-y-6">
+            <form id="consultationForm" action="${pageContext.request.contextPath}/generaliste/nouvelle-consultation" method="POST" class="space-y-6">
+                <!-- Inclure l'ID du patient dans le formulaire -->
+                <c:if test="${not empty patient}">
+                    <input type="hidden" name="patientId" value="${patient.id}" />
+                </c:if>
+
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <div class="flex items-center mb-6">
                         <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">2</div>
@@ -256,59 +259,6 @@
                     </div>
                 </div>
 
-                <!-- Step 4: Medical Acts -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">4</div>
-                        <div>
-                            <h2 class="text-lg font-bold text-gray-900">Actes Techniques Médicaux (Optionnel)</h2>
-                            <p class="text-sm text-gray-600">Sélectionnez les actes à réaliser</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="RADIOGRAPHIE" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Radiographie</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="ECHOGRAPHIE" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Échographie</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="IRM" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">IRM</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="ECG" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Électrocardiogramme (ECG)</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="ANALYSE_SANG" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Analyse de sang</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="ANALYSE_URINE" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Analyse d'urine</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="FOND_OEIL" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Fond d'œil</span>
-                        </label>
-
-                        <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="actes" value="LASER" class="h-5 w-5 text-black border-gray-300 rounded">
-                            <span class="ml-3 text-sm font-medium text-gray-900">Dermatologique (Laser)</span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- Cost Summary -->
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
@@ -327,19 +277,12 @@
 
                 <!-- Actions -->
                 <div class="flex items-center justify-between gap-4">
-                    <a href="${pageContext.request.contextPath}/generaliste/dashboard"
+                    <a href="${pageContext.request.contextPath}/generaliste/patients"
                        class="flex-1 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-3 rounded-lg text-center">
                         Annuler
                     </a>
-                    <button type="button" onclick="saveDraft()"
-                            class="flex-1 bg-gray-700 hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-                        </svg>
-                        Sauvegarder Brouillon
-                    </button>
-                    <button type="submit"
-                            class="flex-1 bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center">
+                    <button type="submit" <c:if test="${empty patient}">disabled</c:if>
+                            class="flex-1 bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center <c:if test='${empty patient}'>opacity-50 cursor-not-allowed</c:if>">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>

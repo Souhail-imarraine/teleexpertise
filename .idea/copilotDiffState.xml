@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/src/main/java/com/example/teleexpertise/dao/InfirmierDAO.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/main/java/com/example/teleexpertise/dao/InfirmierDAO.java" />
+              <option name="originalContent" value="package com.example.teleexpertise.dao;&#10;&#10;import com.example.teleexpertise.model.Infirmier;&#10;import com.example.teleexpertise.util.JpaUtil;&#10;import jakarta.persistence.EntityManager;&#10;import jakarta.persistence.TypedQuery;&#10;&#10;import java.util.List;&#10;&#10;/**&#10; * DAO pour Infirmier - Hérite de GenericDAOImpl&#10; */&#10;public class InfirmierDAO extends GenericDAOImpl&lt;Infirmier&gt; {&#10;&#10;    public InfirmierDAO() {&#10;        super(Infirmier.class);&#10;    }&#10;&#10;    // ✅ save(), update(), findById(), findAll(), deleteById() sont HÉRITÉS&#10;    // Pas besoin de les réécrire !&#10;&#10;    /**&#10;     * Trouver un infirmier par email&#10;     */&#10;    public Infirmier findByEmail(String email) {&#10;        EntityManager em = JpaUtil.getEntityManager();&#10;        try {&#10;            TypedQuery&lt;Infirmier&gt; query = em.createQuery(&#10;                &quot;SELECT i FROM Infirmier i WHERE i.email = :email&quot;,&#10;                Infirmier.class&#10;            );&#10;            query.setParameter(&quot;email&quot;, email);&#10;            List&lt;Infirmier&gt; results = query.getResultList();&#10;            return results.isEmpty() ? null : results.get(0);&#10;        } finally {&#10;            em.close();&#10;        }&#10;    }&#10;}" />
+              <option name="updatedContent" value="package com.example.teleexpertise.dao;&#13;&#10;&#13;&#10;import com.example.teleexpertise.model.Infirmier;&#13;&#10;import com.example.teleexpertise.util.JpaUtil;&#13;&#10;import jakarta.persistence.EntityManager;&#13;&#10;import jakarta.persistence.TypedQuery;&#13;&#10;&#13;&#10;import java.util.List;&#13;&#10;&#13;&#10;/**&#13;&#10; * DAO pour Infirmier - Hérite de GenericDAOImpl&#13;&#10; */&#13;&#10;public class InfirmierDAO extends GenericDAOImpl&lt;Infirmier&gt; {&#13;&#10;&#13;&#10;    public InfirmierDAO() {&#13;&#10;        super(Infirmier.class);&#13;&#10;    }&#13;&#10;&#13;&#10;    // ✅ save(), update(), findById(), findAll(), deleteById() sont HÉRITÉS&#13;&#10;    // Pas besoin de les réécrire !&#13;&#10;&#13;&#10;    /**&#13;&#10;     * Trouver un infirmier par email&#13;&#10;     */&#13;&#10;    public Infirmier findByEmail(String email) {&#13;&#10;        EntityManager em = JpaUtil.getEntityManager();&#13;&#10;        try {&#13;&#10;            TypedQuery&lt;Infirmier&gt; query = em.createQuery(&#13;&#10;                &quot;SELECT i FROM Infirmier i WHERE i.email = :email&quot;,&#13;&#10;                Infirmier.class&#13;&#10;            );&#13;&#10;            query.setParameter(&quot;email&quot;, email);&#13;&#10;            List&lt;Infirmier&gt; results = query.getResultList();&#13;&#10;            return results.isEmpty() ? null : results.get(0);&#13;&#10;        } finally {&#13;&#10;            em.close();&#13;&#10;        }&#13;&#10;    }&#13;&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

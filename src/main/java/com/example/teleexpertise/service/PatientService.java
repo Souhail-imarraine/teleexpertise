@@ -7,6 +7,7 @@ import com.example.teleexpertise.model.enums.StatutPatient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service pour gérer la logique métier des patients
@@ -46,19 +47,20 @@ public class PatientService {
         patient.setStatut(StatutPatient.EN_ATTENTE);
 
         // Sauvegarder le patient
-        patientDAO.save(patient);
-
-        return patient;
+        return patientDAO.save(patient);
     }
 
     public Patient mettreAJourSignesVitaux(Long patientId, String tensionArterielle,
                                            Integer frequenceCardiaque, Double temperature,
                                            Integer frequenceRespiratoire, Double poids, Double taille) {
-        Patient patient = patientDAO.findById(patientId);
+        // Utiliser Optional pour gérer le résultat
+        Optional<Patient> optionalPatient = patientDAO.findById(patientId);
 
-        if (patient == null) {
-            throw new IllegalArgumentException("Patient introuvable");
+        if (!optionalPatient.isPresent()) {
+            throw new IllegalArgumentException("Patient introuvable avec l'ID: " + patientId);
         }
+
+        Patient patient = optionalPatient.get();
 
         // Mettre à jour les signes vitaux
         patient.setTensionArterielle(tensionArterielle);
@@ -73,10 +75,8 @@ public class PatientService {
         patient.setDateEnregistrement(LocalDate.now());
         patient.setStatut(StatutPatient.EN_ATTENTE);
 
-        patientDAO.update(patient);
-        return patient;
+        return patientDAO.update(patient);
     }
-
 
     public Patient rechercherParNumeroSS(String numeroSS) {
         if (numeroSS == null || numeroSS.trim().isEmpty()) {
@@ -86,7 +86,6 @@ public class PatientService {
         return patientDAO.findByNumeroSecuriteSociale(numeroSS.trim());
     }
 
-
     public List<Patient> rechercherParNomOuPrenom(String searchTerm) {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return List.of();
@@ -95,30 +94,28 @@ public class PatientService {
         return patientDAO.findByNomOrPrenom(searchTerm.trim());
     }
 
-
     public List<Patient> obtenirTousLesPatients() {
         return patientDAO.findAll();
     }
 
-
     public List<Patient> obtenirPatientsAujourdhui() {
         return patientDAO.findPatientsAujourdhui();
     }
-
 
     public Patient obtenirPatientParId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("L'ID du patient est requis");
         }
 
-        Patient patient = patientDAO.findById(id);
-        if (patient == null) {
+        // Utiliser Optional
+        Optional<Patient> optionalPatient = patientDAO.findById(id);
+
+        if (!optionalPatient.isPresent()) {
             throw new IllegalArgumentException("Patient introuvable avec l'ID: " + id);
         }
 
-        return patient;
+        return optionalPatient.get();
     }
-
 
     public void ajouterALaFileAttente(Long patientId) {
         Patient patient = obtenirPatientParId(patientId);
@@ -128,6 +125,7 @@ public class PatientService {
     }
 
     public long compterPatientsAujourdhui() {
-        return patientDAO.countPatientsAujourdhui();
+        // Compter les patients d'aujourd'hui
+        return obtenirPatientsAujourdhui().size();
     }
 }
