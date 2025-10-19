@@ -1,6 +1,8 @@
 package com.example.teleexpertise.controller.Generaliste;
 
+import com.example.teleexpertise.model.Consultation;
 import com.example.teleexpertise.model.utilisateur;
+import com.example.teleexpertise.service.ConsultationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,8 +12,18 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * Servlet pour afficher les détails d'une consultation
+ * ✅ Controller simple qui utilise ConsultationService
+ */
 @WebServlet("/generaliste/consultation/*")
 public class GeneralisteDetailConsultationServlet extends HttpServlet {
+
+    private final ConsultationService consultationService;
+
+    public GeneralisteDetailConsultationServlet() {
+        this.consultationService = new ConsultationService();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -21,13 +33,13 @@ public class GeneralisteDetailConsultationServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Vérifier si l'utilisateur est connecté
+        // 1. Vérifier l'authentification
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        // Vérifier le rôle
+        // 2. Vérifier le rôle
         utilisateur user = (utilisateur) session.getAttribute("user");
         if (!"GENERALISTE".equalsIgnoreCase(user.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -35,35 +47,43 @@ public class GeneralisteDetailConsultationServlet extends HttpServlet {
         }
 
         try {
-            // Récupérer l'ID de la consultation depuis l'URL
+            // 3. Récupérer l'ID de la consultation depuis l'URL
             String pathInfo = request.getPathInfo();
             if (pathInfo == null || pathInfo.length() <= 1) {
                 response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
                 return;
             }
 
-            String consultationId = pathInfo.substring(1); // Enlever le "/"
+            String consultationIdStr = pathInfo.substring(1); // Enlever le "/"
+            Long consultationId = Long.parseLong(consultationIdStr);
 
-            // TODO: Récupérer la consultation depuis la base de données
-            // Consultation consultation = consultationService.getConsultationById(Long.parseLong(consultationId));
-            // if (consultation == null) {
-            //     response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
-            //     return;
-            // }
-            // request.setAttribute("consultation", consultation);
+            // 4. Récupérer la consultation via le service
+            Consultation consultation = consultationService.obtenirConsultationParId(consultationId);
 
-            request.setAttribute("consultationId", consultationId);
+            // 5. Vérifier que la consultation appartient bien au généraliste connecté
+            if (consultation.getGeneraliste().getId() != user.getId()) {
+                session.setAttribute("errorMessage", "Vous n'avez pas accès à cette consultation");
+                response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
+                return;
+            }
 
-            // Forward vers la JSP
+            // 6. Envoyer la consultation à la JSP
+            request.setAttribute("consultation", consultation);
+
+            // 7. Forward vers la JSP
             request.getRequestDispatcher("/WEB-INF/jsp/generaliste/detail-consultation.jsp")
                     .forward(request, response);
 
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "ID de consultation invalide");
+            response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
+        } catch (IllegalArgumentException e) {
+            session.setAttribute("errorMessage", e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "Erreur lors du chargement de la consultation: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/detail-consultation.jsp")
-                    .forward(request, response);
+            session.setAttribute("errorMessage", "Erreur lors du chargement de la consultation");
+            response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
         }
     }
 }
-

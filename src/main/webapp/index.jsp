@@ -101,6 +101,9 @@
 
         <!-- Formulaire -->
         <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
+            <!-- ✅ CSRF Token -->
+            <input type="hidden" name="csrfToken" value="${csrfToken}"/>
+
             <div>
                 <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
                     Nom d'utilisateur <span class="text-red-500">*</span>

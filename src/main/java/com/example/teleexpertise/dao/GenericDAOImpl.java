@@ -13,10 +13,7 @@ import java.util.Optional;
  * @param <T> Type de l'entité
  */
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
-
-    // La classe de l'entité (Patient.class, Specialiste.class...)
     private final Class<T> entityClass;
-
     // Constructeur
     protected GenericDAOImpl(Class<T> entityClass) {
         this.entityClass = entityClass;

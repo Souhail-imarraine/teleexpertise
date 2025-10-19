@@ -5,56 +5,50 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 public class JpaUtil {
-    private static EntityManagerFactory entityManagerFactory;
+
+    private static final EntityManagerFactory emf;
+
     static {
+        EntityManagerFactory temp = null;
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("teleexpertisePU");
-            System.out.println("EntityManagerFactory créé avec succès!");
+            temp = Persistence.createEntityManagerFactory("teleexpertisePU");
+            System.out.println("EntityManagerFactory créé avec succès !");
         } catch (Exception e) {
-            System.err.println("Erreur lors de la création de l'EntityManagerFactory: " + e.getMessage());
+            System.err.println("Erreur lors de la création de l'EntityManagerFactory : " + e.getMessage());
             e.printStackTrace();
         }
+        emf = temp;
     }
 
     public static EntityManager getEntityManager() {
-        if (entityManagerFactory == null) {
-            throw new IllegalStateException("EntityManagerFactory n'est pas initialisé");
+        if (emf == null) {
+            throw new IllegalStateException("EntityManagerFactory non initialisé");
         }
-        return entityManagerFactory.createEntityManager();
+        return emf.createEntityManager();
     }
 
     public static EntityManagerFactory getEntityManagerFactory() {
-        return entityManagerFactory;
+        return emf;
     }
 
     public static void close() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
+        if (emf != null && emf.isOpen()) {
+            emf.close();
             System.out.println("EntityManagerFactory fermé");
         }
     }
 
-    // Méthode pour tester la connexion
     public static boolean testConnection() {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
+        try (EntityManager em = getEntityManager()) {
             em.getTransaction().begin();
             em.createNativeQuery("SELECT 1").getSingleResult();
             em.getTransaction().commit();
-            System.out.println("Connexion à la bcase de données réussie!");
+            System.out.println("Connexion à la base de données réussie !");
             return true;
         } catch (Exception e) {
-            System.err.println("Erreur de connexion à la base de données: " + e.getMessage());
+            System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
             e.printStackTrace();
-            if (em != null && em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
             return false;
-        } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
         }
     }
 }

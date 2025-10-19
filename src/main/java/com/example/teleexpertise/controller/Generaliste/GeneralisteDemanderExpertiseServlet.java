@@ -1,6 +1,7 @@
 package com.example.teleexpertise.controller.Generaliste;
 
 import com.example.teleexpertise.model.utilisateur;
+import com.example.teleexpertise.service.GeneralisteService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,9 +13,17 @@ import java.io.IOException;
 
 /**
  * Servlet pour demander un avis spécialiste (expertise)
+ * ✅ Controller simple : gère seulement les requêtes HTTP
+ * ✅ Logique métier déplacée dans GeneralisteService
  */
 @WebServlet("/generaliste/demander-expertise")
 public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
+
+    private final GeneralisteService generalisteService;
+
+    public GeneralisteDemanderExpertiseServlet() {
+        this.generalisteService = new GeneralisteService();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -24,13 +33,13 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Vérifier si l'utilisateur est connecté
+        // 1. Vérifier l'authentification
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        // Vérifier le rôle
+        // 2. Vérifier le rôle
         utilisateur user = (utilisateur) session.getAttribute("user");
         if (!"GENERALISTE".equalsIgnoreCase(user.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -38,23 +47,13 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
         }
 
         try {
-            // Récupérer l'ID de la consultation si fourni
+            // 3. Récupérer l'ID de la consultation (si fourni)
             String consultationId = request.getParameter("consultationId");
-
-            // TODO: Récupérer la consultation et les spécialistes disponibles
-            // if (consultationId != null) {
-            //     Consultation consultation = consultationService.getConsultationById(Long.parseLong(consultationId));
-            //     request.setAttribute("consultation", consultation);
-            // }
-
-            // List<Specialiste> specialistes = specialisteService.getAllSpecialistes();
-            // request.setAttribute("specialistes", specialistes);
-
             if (consultationId != null) {
                 request.setAttribute("consultationId", consultationId);
             }
 
-            // Forward vers la JSP
+            // 4. Afficher le formulaire
             request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
                     .forward(request, response);
 
@@ -74,6 +73,7 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        // 1. Vérifier l'authentification
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -86,27 +86,40 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
         }
 
         try {
-            // TODO: Récupérer les données du formulaire et créer la demande d'expertise
-            // String consultationId = request.getParameter("consultationId");
-            // String specialite = request.getParameter("specialite");
-            // String specialisteId = request.getParameter("specialiste");
-            // String creneauId = request.getParameter("creneau");
-            // String priorite = request.getParameter("priorite");
-            // String question = request.getParameter("question");
+            // 2. Récupérer les paramètres du formulaire
+            int consultationId = Integer.parseInt(request.getParameter("consultationId"));
+            int generalisteId = user.getId();
+            int specialisteId = Integer.parseInt(request.getParameter("specialiste"));
+            int creneauId = Integer.parseInt(request.getParameter("creneau"));
+            String priorite = request.getParameter("priorite");
+            String question = request.getParameter("question");
+            String donneesAnalyses = request.getParameter("donneesAnalyses");
+            String modeExpertise = request.getParameter("modeExpertise");
 
-            // DemandeExpertise expertise = new DemandeExpertise();
-            // expertise.setPriorite(Priorite.valueOf(priorite));
-            // expertise.setQuestion(question);
-            // ... set other fields
+            // 3. Appeler le service pour créer la demande (toute la logique métier est dans le service)
+            generalisteService.creerDemandeExpertise(
+                consultationId,
+                generalisteId,
+                specialisteId,
+                creneauId,
+                priorite,
+                question,
+                donneesAnalyses,
+                modeExpertise
+            );
 
-            // expertiseService.createDemandeExpertise(expertise);
-
-            // Mettre à jour le statut de la consultation
-            // consultationService.updateStatut(consultationId, StatutConsultation.EN_ATTENTE_AVIS_SPECIALISTE);
-
+            // 4. Message de succès et redirection
             session.setAttribute("successMessage", "Demande d'expertise envoyée avec succès !");
-            response.sendRedirect(request.getContextPath() + "/generaliste/expertises");
+            response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
 
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Paramètres invalides");
+            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
+                    .forward(request, response);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
+                    .forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Erreur lors de l'envoi de la demande: " + e.getMessage());
@@ -115,4 +128,3 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
         }
     }
 }
-

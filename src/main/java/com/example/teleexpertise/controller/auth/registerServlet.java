@@ -1,11 +1,13 @@
 package com.example.teleexpertise.controller.auth;
 
 import com.example.teleexpertise.service.AuthService;
+import com.example.teleexpertise.util.CsrfUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -23,6 +25,12 @@ public class registerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
+        // Générer un token CSRF pour le formulaire
+        HttpSession session = request.getSession(true);
+        String csrfToken = CsrfUtil.generateToken(session);
+        request.setAttribute("csrfToken", csrfToken);
+
         request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
     }
 
@@ -31,6 +39,26 @@ public class registerServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+
+        // ✅ Validation du token CSRF
+        if (!CsrfUtil.validateToken(request)) {
+            request.setAttribute("error", "Token de sécurité invalide. Veuillez réessayer.");
+
+            // Préserver les données saisies
+            request.setAttribute("nom", request.getParameter("lastName"));
+            request.setAttribute("prenom", request.getParameter("firstName"));
+            request.setAttribute("email", request.getParameter("email"));
+            request.setAttribute("role", request.getParameter("role"));
+            request.setAttribute("specialite", request.getParameter("specialite"));
+
+            // Régénérer un nouveau token
+            HttpSession session = request.getSession(true);
+            String csrfToken = CsrfUtil.generateToken(session);
+            request.setAttribute("csrfToken", csrfToken);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            return;
+        }
 
         // Récupération des paramètres du formulaire
         String nom = request.getParameter("lastName");
@@ -54,6 +82,12 @@ public class registerServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("role", role);
             request.setAttribute("specialite", specialite);
+
+            // Régénérer un nouveau token en cas d'erreur
+            HttpSession session = request.getSession(true);
+            String csrfToken = CsrfUtil.generateToken(session);
+            request.setAttribute("csrfToken", csrfToken);
+
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
     }

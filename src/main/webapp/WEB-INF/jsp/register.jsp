@@ -89,9 +89,12 @@
         </c:if>
 
         <!-- Formulaire -->
-        <form action="${pageContext.request.contextPath}/register" method="post" class="space-y-5">
-            <!-- Prénom et Nom -->
-            <div class="grid grid-cols-2 gap-4">
+        <form action="${pageContext.request.contextPath}/register" method="post" class="space-y-6">
+            <!-- ✅ CSRF Token -->
+            <input type="hidden" name="csrfToken" value="${csrfToken}"/>
+
+            <!-- Nom et Prénom -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">
                         Prénom <span class="text-red-500">*</span>
