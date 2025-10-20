@@ -121,7 +121,6 @@
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Accueillir un Patient</h1>
-            <p class="text-sm text-gray-600 mt-1">Rechercher un patient existant ou créer un nouveau dossier patient</p>
         </div>
     </header>
 
@@ -137,7 +136,7 @@
                             <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
-                            <span class="hidden sm:inline">Scénario A : </span>Patient Existant
+                            <span class="hidden sm:inline"></span>Patient Existant
                         </div>
                     </button>
                     <button onclick="showTab('create')" id="tab-create"
@@ -146,7 +145,7 @@
                             <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                             </svg>
-                            <span class="hidden sm:inline">Scénario B : </span>Nouveau Patient
+                            <span class="hidden sm:inline"></span>Nouveau Patient
                         </div>
                     </button>
                 </nav>

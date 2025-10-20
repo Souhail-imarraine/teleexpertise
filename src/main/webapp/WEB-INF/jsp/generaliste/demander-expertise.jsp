@@ -4,7 +4,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Demander Expertise - Télé-Expertise</title>
+    <title>Demander un Avis Spécialiste - Télé-Expertise</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -45,6 +45,14 @@
                 </svg>
                 Dashboard
             </a>
+
+            <a href="${pageContext.request.contextPath}/generaliste/consultations"
+               class="text-gray-700 hover:text-black hover:bg-gray-100 group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                <svg class="text-gray-400 group-hover:text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Consultations
+            </a>
         </div>
     </nav>
 
@@ -75,377 +83,185 @@
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">🩺 Demander un Avis Spécialiste</h1>
+                <div class="flex items-center space-x-4">
+                    <a href="${pageContext.request.contextPath}/generaliste/consultations"
+                       class="text-gray-600 hover:text-black">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">Demander un Avis Spécialiste</h1>
                 </div>
-                <a href="${pageContext.request.contextPath}/generaliste/consultations"
-                   class="bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-2 rounded-lg flex items-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    Retour
-                </a>
             </div>
         </div>
     </header>
 
     <main class="p-4 sm:p-6 lg:p-8">
-        <div class="max-w-4xl mx-auto">
-            <form id="expertiseForm" class="space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">1</div>
+        <!-- Messages -->
+        <c:if test="${not empty errorMessage}">
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm font-medium text-red-800">${errorMessage}</p>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty consultation}">
+            <!-- Info Consultation -->
+            <div class="bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl shadow-lg p-6 mb-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-16 w-16 bg-white text-purple-800 rounded-full flex items-center justify-center font-bold text-xl">
+                            ${patientInitials}
+                        </div>
                         <div>
-                            <h2 class="text-lg font-bold text-gray-900">Choisir la Spécialité</h2>
-                            <p class="text-sm text-gray-600">Sélectionnez le type de spécialiste requis</p>
+                            <h2 class="text-2xl font-bold">
+                                <c:out value="${consultation.patient.nom} ${consultation.patient.prenom}"/>
+                            </h2>
+                            <p class="text-purple-100 mt-1">
+                                Consultation du ${dateConsultation} à ${timeConsultation}
+                            </p>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="CARDIOLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-red-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Cardiologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="PNEUMOLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-blue-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Pneumologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="NEUROLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-purple-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Neurologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="DERMATOLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-pink-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Dermatologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="GASTRO_ENTEROLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-yellow-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Gastro-entérologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="ENDOCRINOLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-green-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Endocrinologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="RHUMATOLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-orange-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Rhumatologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="PSYCHIATRIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-indigo-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Psychiatrie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="NEPHROLOGIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-teal-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Néphrologie</span>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialite" value="ORTHOPEDIE" class="sr-only" onchange="loadSpecialists(this.value)">
-                            <div class="flex items-center w-full">
-                                <div class="bg-gray-100 p-3 rounded-lg mr-3">
-                                    <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                    </svg>
-                                </div>
-                                <span class="font-bold text-gray-900">Orthopédie</span>
-                            </div>
-                        </label>
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-purple-200">Motif</div>
+                        <div class="text-lg font-bold"><c:out value="${consultation.motif}"/></div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Step 2: Select Specialist -->
-                <div id="specialistSection" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">2</div>
-                        <div>
-                            <h2 class="text-lg font-bold text-gray-900">Sélectionner un Spécialiste</h2>
-                            <p class="text-sm text-gray-600">Choisissez parmi les spécialistes disponibles</p>
+            <!-- Formulaire -->
+            <form method="post" action="${pageContext.request.contextPath}/generaliste/demander-expertise" id="expertiseForm">
+                <input type="hidden" name="consultationId" value="${consultationId}">
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Colonne gauche : Sélection -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Étape 1 : Spécialité -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-black text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-sm mr-3">1</div>
+                                <h3 class="text-lg font-bold text-gray-900">Choisir la Spécialité</h3>
+                            </div>
+                            <select id="specialite" name="specialite" required
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+                                <option value="">-- Sélectionner --</option>
+                                <c:forEach var="spec" items="${specialites}">
+                                    <option value="${spec}">${spec}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+
+                        <!-- Étape 2 : Spécialiste -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-black text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-sm mr-3">2</div>
+                                <h3 class="text-lg font-bold text-gray-900">Choisir le Spécialiste</h3>
+                            </div>
+                            <div id="specialistes-container">
+                                <p class="text-sm text-gray-500 italic">Veuillez d'abord sélectionner une spécialité</p>
+                            </div>
+                        </div>
+
+                        <!-- Étape 3 : Créneau -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-black text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-sm mr-3">3</div>
+                                <h3 class="text-lg font-bold text-gray-900">Choisir un Créneau</h3>
+                            </div>
+                            <div id="creneaux-container">
+                                <p class="text-sm text-gray-500 italic">Veuillez d'abord sélectionner un spécialiste</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="specialistsList" class="space-y-4">
-                        <!-- Example specialists - will be loaded dynamically -->
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialiste" value="1" class="sr-only" onchange="loadCreneaux(this.value)">
-                            <div class="flex items-center justify-between w-full">
-                                <div class="flex items-center">
-                                    <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">KB</div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">Dr. Karim BENJELLOUN</div>
-                                        <div class="text-xs text-gray-500">Cardiologue | 15 ans d'expérience</div>
-                                        <div class="flex items-center mt-1">
-                                            <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                            </svg>
-                                            <span class="text-xs text-gray-600 ml-1">4.8/5 (120 avis)</span>
-                                        </div>
-                                    </div>
+                    <!-- Colonne droite : Détails -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Priorité et Mode -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Détails de la Demande</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                                        Priorité <span class="text-red-500">*</span>
+                                    </label>
+                                    <select name="priorite" required
+                                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="URGENTE">🔴 Urgente</option>
+                                        <option value="NORMALE" selected>🟡 Normale</option>
+                                        <option value="NON_URGENTE">🟢 Non urgente</option>
+                                    </select>
                                 </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-gray-900">300 DH</div>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
-                                        Disponible
-                                    </span>
-                                </div>
-                            </div>
-                        </label>
-
-                        <label class="relative flex items-center p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50">
-                            <input type="radio" name="specialiste" value="2" class="sr-only" onchange="loadCreneaux(this.value)">
-                            <div class="flex items-center justify-between w-full">
-                                <div class="flex items-center">
-                                    <div class="h-12 w-12 bg-black text-white rounded-full flex items-center justify-center font-bold">SE</div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">Dr. Samira ELMALKI</div>
-                                        <div class="text-xs text-gray-500">Cardiologue | 20 ans d'expérience</div>
-                                        <div class="flex items-center mt-1">
-                                            <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                            </svg>
-                                            <span class="text-xs text-gray-600 ml-1">4.9/5 (200 avis)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-gray-900">350 DH</div>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
-                                        Disponible
-                                    </span>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                                        Mode d'Expertise
+                                    </label>
+                                    <select name="modeExpertise"
+                                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">
+                                        <option value="">-- Sélectionner --</option>
+                                        <option value="SYNCHRONE">📞 Synchrone (Temps réel)</option>
+                                        <option value="ASYNCHRONE" selected>📧 Asynchrone (Différé)</option>
+                                    </select>
                                 </div>
                             </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Step 3: Select Time Slot -->
-                <div id="creneauSection" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">3</div>
-                        <div>
-                            <h2 class="text-lg font-bold text-gray-900">Choisir un Créneau</h2>
-                            <p class="text-sm text-gray-600">Sélectionnez la date et l'heure du rendez-vous</p>
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                        <!-- Example time slots -->
-                        <label class="relative">
-                            <input type="radio" name="creneau" value="1" class="sr-only peer">
-                            <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-black peer-checked:bg-gray-50">
-                                <div class="text-xs text-gray-500 font-bold">17 Oct 2025</div>
-                                <div class="text-sm font-bold text-gray-900 mt-1">09:00 - 09:30</div>
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 mt-2">
-                                    Disponible
-                                </span>
-                            </div>
-                        </label>
-
-                        <label class="relative">
-                            <input type="radio" name="creneau" value="2" class="sr-only peer">
-                            <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-black peer-checked:bg-gray-50">
-                                <div class="text-xs text-gray-500 font-bold">17 Oct 2025</div>
-                                <div class="text-sm font-bold text-gray-900 mt-1">09:30 - 10:00</div>
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 mt-2">
-                                    Disponible
-                                </span>
-                            </div>
-                        </label>
-
-                        <label class="relative">
-                            <input type="radio" name="creneau" value="3" class="sr-only peer">
-                            <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-black peer-checked:bg-gray-50">
-                                <div class="text-xs text-gray-500 font-bold">17 Oct 2025</div>
-                                <div class="text-sm font-bold text-gray-900 mt-1">14:00 - 14:30</div>
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 mt-2">
-                                    Disponible
-                                </span>
-                            </div>
-                        </label>
-
-                        <div class="p-4 border-2 border-gray-200 rounded-lg text-center bg-gray-100 opacity-50">
-                            <div class="text-xs text-gray-400 font-bold">17 Oct 2025</div>
-                            <div class="text-sm font-bold text-gray-400 mt-1">14:30 - 15:00</div>
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 mt-2">
-                                Réservé
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 4: Request Details -->
-                <div id="detailsSection" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-black text-white rounded-full h-10 w-10 flex items-center justify-center font-bold mr-4">4</div>
-                        <div>
-                            <h2 class="text-lg font-bold text-gray-900">Détails de la Demande</h2>
-                            <p class="text-sm text-gray-600">Décrivez votre demande d'expertise</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Priorité <span class="text-red-600">*</span>
+                        <!-- Question -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                Question au Spécialiste <span class="text-red-500">*</span>
                             </label>
-                            <div class="grid grid-cols-3 gap-4">
-                                <label class="relative">
-                                    <input type="radio" name="priorite" value="URGENTE" class="sr-only peer" required>
-                                    <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-red-500 peer-checked:bg-red-50">
-                                        <div class="text-sm font-bold text-gray-900">🚨 Urgente</div>
-                                    </div>
-                                </label>
-                                <label class="relative">
-                                    <input type="radio" name="priorite" value="NORMALE" class="sr-only peer">
-                                    <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-yellow-500 peer-checked:bg-yellow-50">
-                                        <div class="text-sm font-bold text-gray-900">⚠️ Normale</div>
-                                    </div>
-                                </label>
-                                <label class="relative">
-                                    <input type="radio" name="priorite" value="NON_URGENTE" class="sr-only peer">
-                                    <div class="p-4 border-2 border-gray-300 rounded-lg text-center cursor-pointer hover:bg-gray-50 peer-checked:border-green-500 peer-checked:bg-green-50">
-                                        <div class="text-sm font-bold text-gray-900">✅ Non urgente</div>
-                                    </div>
-                                </label>
-                            </div>
+                            <textarea name="question" rows="5" required placeholder="Décrivez la raison de votre demande d'avis..."
+                                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
+                            <p class="text-xs text-gray-500 mt-2">Soyez précis dans votre question pour obtenir un avis pertinent</p>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Question posée au spécialiste <span class="text-red-600">*</span>
+                        <!-- Données et Analyses -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                Données et Analyses Complémentaires
                             </label>
-                            <textarea name="question" rows="6" required
-                                      placeholder="Décrivez clairement votre question et ce que vous attendez du spécialiste...&#10;&#10;Ex: Patient de 40 ans avec douleurs thoraciques. Besoin d'avis sur diagnostic différentiel et prise en charge appropriée."
-                                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-black"></textarea>
+                            <textarea name="donneesAnalyses" rows="4" placeholder="Résultats d'examens, analyses biologiques, imagerie, etc."
+                                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium resize-none"></textarea>
+                            <p class="text-xs text-gray-500 mt-2">Ajoutez toute information médicale pertinente (optionnel)</p>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-gray-900 mb-2">
-                                Documents et analyses à partager
-                            </label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 cursor-pointer">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        <!-- Actions -->
+                        <div class="flex items-center justify-end space-x-3">
+                            <a href="${pageContext.request.contextPath}/generaliste/consultations"
+                               class="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold px-6 py-3 rounded-lg">
+                                Annuler
+                            </a>
+                            <button type="submit"
+                                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-3 rounded-lg flex items-center">
+                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                 </svg>
-                                <p class="mt-2 text-sm text-gray-600">
-                                    <span class="font-bold text-black">Cliquez pour uploader</span> ou glissez-déposez
-                                </p>
-                                <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG jusqu'à 10MB</p>
-                            </div>
+                                Envoyer la Demande
+                            </button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Summary & Submit -->
-                <div id="summarySection" class="hidden">
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white mb-6">
-                        <h2 class="text-lg font-bold mb-4">Récapitulatif de la Demande</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div class="text-purple-100 text-xs uppercase font-bold">Spécialité</div>
-                                <div class="font-bold mt-1">Cardiologie</div>
-                            </div>
-                            <div>
-                                <div class="text-purple-100 text-xs uppercase font-bold">Spécialiste</div>
-                                <div class="font-bold mt-1">Dr. Karim BENJELLOUN</div>
-                            </div>
-                            <div>
-                                <div class="text-purple-100 text-xs uppercase font-bold">Date & Heure</div>
-                                <div class="font-bold mt-1">17 Oct 2025 - 14:00</div>
-                            </div>
-                            <div>
-                                <div class="text-purple-100 text-xs uppercase font-bold">Coût</div>
-                                <div class="font-bold mt-1">300 DH</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between gap-4">
-                        <a href="${pageContext.request.contextPath}/generaliste/consultations"
-                           class="flex-1 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-3 rounded-lg text-center">
-                            Annuler
-                        </a>
-                        <button type="submit"
-                                class="flex-1 bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center">
-                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Envoyer la Demande
-                        </button>
                     </div>
                 </div>
             </form>
-        </div>
+        </c:if>
+
+        <c:if test="${empty consultation}">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+                <svg class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Consultation introuvable</h3>
+                <p class="text-gray-600 mb-6">Impossible de charger les informations de la consultation.</p>
+                <a href="${pageContext.request.contextPath}/generaliste/consultations"
+                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg">
+                    Retour aux consultations
+                </a>
+            </div>
+        </c:if>
     </main>
 </div>
 
@@ -454,44 +270,106 @@
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
 
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-    });
-
-    overlay.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-    });
-
-    function loadSpecialists(specialite) {
-        document.getElementById('specialistSection').classList.remove('hidden');
-        document.getElementById('creneauSection').classList.add('hidden');
-        document.getElementById('detailsSection').classList.add('hidden');
-        document.getElementById('summarySection').classList.add('hidden');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
     }
 
-    function loadCreneaux(specialisteId) {
-        document.getElementById('creneauSection').classList.remove('hidden');
-        document.getElementById('detailsSection').classList.add('hidden');
-        document.getElementById('summarySection').classList.add('hidden');
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
     }
 
-    // Listen to creneau selection
-    document.addEventListener('change', (e) => {
-        if (e.target.name === 'creneau') {
-            document.getElementById('detailsSection').classList.remove('hidden');
-            document.getElementById('summarySection').classList.remove('hidden');
-        }
-    });
+    // Gestion de la sélection de spécialité
+    const specialiteSelect = document.getElementById('specialite');
+    if (specialiteSelect) {
+        specialiteSelect.addEventListener('change', function() {
+            const specialite = this.value;
+            if (!specialite) {
+                document.getElementById('specialistes-container').innerHTML =
+                    '<p class="text-sm text-gray-500 italic">Veuillez d\'abord sélectionner une spécialité</p>';
+                document.getElementById('creneaux-container').innerHTML =
+                    '<p class="text-sm text-gray-500 italic">Veuillez d\'abord sélectionner un spécialiste</p>';
+                return;
+            }
 
-    document.getElementById('expertiseForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (confirm('Êtes-vous sûr de vouloir envoyer cette demande d\'expertise ?')) {
-            alert('Demande envoyée avec succès ! Le spécialiste a été notifié.');
-            window.location.href = '${pageContext.request.contextPath}/generaliste/expertises';
+            // Charger les spécialistes
+            fetch('${pageContext.request.contextPath}/api/specialistes?specialite=' + specialite)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        document.getElementById('specialistes-container').innerHTML =
+                            '<p class="text-sm text-red-500">Aucun spécialiste disponible pour cette spécialité</p>';
+                        return;
+                    }
+
+                    let html = '<select id="specialiste" name="specialiste" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 focus:border-black text-gray-900 font-medium">';
+                    html += '<option value="">-- Sélectionner --</option>';
+                    data.forEach(spec => {
+                        html += `<option value="${spec.id}">Dr. ${spec.nom} ${spec.prenom} - ${spec.tarif} DH</option>`;
+                    });
+                    html += '</select>';
+
+                    document.getElementById('specialistes-container').innerHTML = html;
+
+                    // Ajouter un listener pour le changement de spécialiste
+                    document.getElementById('specialiste').addEventListener('change', chargerCreneaux);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    document.getElementById('specialistes-container').innerHTML =
+                        '<p class="text-sm text-red-500">Erreur lors du chargement des spécialistes</p>';
+                });
+        });
+    }
+
+    function chargerCreneaux() {
+        const specialisteId = document.getElementById('specialiste').value;
+        if (!specialisteId) {
+            document.getElementById('creneaux-container').innerHTML =
+                '<p class="text-sm text-gray-500 italic">Veuillez d\'abord sélectionner un spécialiste</p>';
+            return;
         }
-    });
+
+        // Charger les créneaux
+        fetch('${pageContext.request.contextPath}/api/creneaux?specialisteId=' + specialisteId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    document.getElementById('creneaux-container').innerHTML =
+                        '<p class="text-sm text-red-500">Aucun créneau disponible pour ce spécialiste</p>';
+                    return;
+                }
+
+                let html = '<div class="space-y-2">';
+                data.forEach(creneau => {
+                    html += `
+                        <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg hover:border-black cursor-pointer">
+                            <input type="radio" name="creneau" value="${creneau.id}" required class="mr-3">
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-gray-900">${creneau.dateDebut}</div>
+                                <div class="text-xs text-gray-500">${creneau.duree} minutes</div>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-800">
+                                Disponible
+                            </span>
+                        </label>
+                    `;
+                });
+                html += '</div>';
+
+                document.getElementById('creneaux-container').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('creneaux-container').innerHTML =
+                    '<p class="text-sm text-red-500">Erreur lors du chargement des créneaux</p>';
+            });
+    }
 </script>
 </body>
 </html>

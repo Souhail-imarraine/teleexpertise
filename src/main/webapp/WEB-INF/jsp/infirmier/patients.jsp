@@ -248,11 +248,7 @@
                                                             <c:out value="${patient.prenom}"/> <c:out value="${patient.nom}"/>
                                                         </div>
                                                         <div class="text-xs font-medium text-gray-500">
-                                                            <c:if test="${not empty patient.dateNaissance}">
-                                                                <jsp:useBean id="now" class="java.util.Date"/>
-                                                                ${now.year - patient.dateNaissance.year} ans •
-                                                            </c:if>
-                                                            N° <c:out value="${patient.numeroSecuriteSociale}"/>
+                                                            ${ageMap[patient.id]} • N° <c:out value="${patient.numeroSecuriteSociale}"/>
                                                         </div>
                                                     </div>
                                                 </div>

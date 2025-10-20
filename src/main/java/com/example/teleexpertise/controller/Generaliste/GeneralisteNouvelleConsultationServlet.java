@@ -117,7 +117,6 @@ public class GeneralisteNouvelleConsultationServlet extends HttpServlet {
             }
 
             Long patientId = Long.parseLong(patientIdStr);
-            // ✅ Conversion explicite int → Long
             Long generalisteId = Long.valueOf(user.getId());
             // 3. Créer la consultation via le service
             Consultation consultation = consultationService.creerConsultation(

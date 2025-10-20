@@ -1,7 +1,11 @@
 package com.example.teleexpertise.controller.Generaliste;
 
+import com.example.teleexpertise.model.Consultation;
 import com.example.teleexpertise.model.utilisateur;
+import com.example.teleexpertise.model.enums.TypeSpecialite;
+import com.example.teleexpertise.service.ConsultationService;
 import com.example.teleexpertise.service.GeneralisteService;
+import com.example.teleexpertise.util.DateUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,9 +24,11 @@ import java.io.IOException;
 public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
 
     private final GeneralisteService generalisteService;
+    private final ConsultationService consultationService;
 
     public GeneralisteDemanderExpertiseServlet() {
         this.generalisteService = new GeneralisteService();
+        this.consultationService = new ConsultationService();
     }
 
     @Override
@@ -47,16 +53,61 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
         }
 
         try {
-            // 3. Récupérer l'ID de la consultation (si fourni)
-            String consultationId = request.getParameter("consultationId");
-            if (consultationId != null) {
-                request.setAttribute("consultationId", consultationId);
+            // 3. Récupérer l'ID de la consultation
+            String consultationIdParam = request.getParameter("consultationId");
+            if (consultationIdParam == null || consultationIdParam.isEmpty()) {
+                session.setAttribute("errorMessage", "ID de consultation manquant");
+                response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
+                return;
             }
 
-            // 4. Afficher le formulaire
+            Long consultationId = Long.parseLong(consultationIdParam);
+
+            // 4. Récupérer la consultation
+            Consultation consultation = consultationService.obtenirConsultationParId(consultationId);
+
+            if (consultation == null) {
+                session.setAttribute("errorMessage", "Consultation introuvable");
+                response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
+                return;
+            }
+
+            // 5. Vérifier que la consultation appartient au généraliste
+            if (consultation.getGeneraliste().getId() != user.getId()) {
+                session.setAttribute("errorMessage", "Accès refusé à cette consultation");
+                response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
+                return;
+            }
+
+            // 6. Préparer les données formatées avec DateUtil
+            String dateConsultation = DateUtil.formatDate(consultation.getDateConsultation());
+            String timeConsultation = DateUtil.formatTime(consultation.getDateConsultation());
+
+            String patientInitials = "??";
+            if (consultation.getPatient() != null) {
+                String nom = consultation.getPatient().getNom() != null ? consultation.getPatient().getNom() : "";
+                String prenom = consultation.getPatient().getPrenom() != null ? consultation.getPatient().getPrenom() : "";
+
+                if (!nom.isEmpty() && !prenom.isEmpty()) {
+                    patientInitials = nom.substring(0, 1).toUpperCase() + prenom.substring(0, 1).toUpperCase();
+                }
+            }
+
+            // 7. Envoyer les données au formulaire
+            request.setAttribute("consultation", consultation);
+            request.setAttribute("consultationId", consultationId);
+            request.setAttribute("dateConsultation", dateConsultation);
+            request.setAttribute("timeConsultation", timeConsultation);
+            request.setAttribute("patientInitials", patientInitials);
+            request.setAttribute("specialites", TypeSpecialite.values());
+
+            // 8. Afficher le formulaire
             request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
                     .forward(request, response);
 
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "ID de consultation invalide");
+            response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Erreur lors du chargement du formulaire: " + e.getMessage());
@@ -96,7 +147,7 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
             String donneesAnalyses = request.getParameter("donneesAnalyses");
             String modeExpertise = request.getParameter("modeExpertise");
 
-            // 3. Appeler le service pour créer la demande (toute la logique métier est dans le service)
+            // 3. Appeler le service pour créer la demande
             generalisteService.creerDemandeExpertise(
                 consultationId,
                 generalisteId,
@@ -109,22 +160,19 @@ public class GeneralisteDemanderExpertiseServlet extends HttpServlet {
             );
 
             // 4. Message de succès et redirection
-            session.setAttribute("successMessage", "Demande d'expertise envoyée avec succès !");
+            session.setAttribute("successMessage", "✅ Demande d'expertise envoyée avec succès ! Le spécialiste a été notifié.");
             response.sendRedirect(request.getContextPath() + "/generaliste/consultations");
 
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Paramètres invalides");
-            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
-                    .forward(request, response);
+            doGet(request, response);
         } catch (IllegalArgumentException e) {
             request.setAttribute("errorMessage", e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
-                    .forward(request, response);
+            doGet(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Erreur lors de l'envoi de la demande: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/generaliste/demander-expertise.jsp")
-                    .forward(request, response);
+            doGet(request, response);
         }
     }
 }

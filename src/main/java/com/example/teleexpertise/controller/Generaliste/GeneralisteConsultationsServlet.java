@@ -3,6 +3,7 @@ package com.example.teleexpertise.controller.Generaliste;
 import com.example.teleexpertise.model.Consultation;
 import com.example.teleexpertise.model.utilisateur;
 import com.example.teleexpertise.service.ConsultationService;
+import com.example.teleexpertise.util.DateUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +56,7 @@ public class GeneralisteConsultationsServlet extends HttpServlet {
             // 4. Récupérer toutes les consultations de ce généraliste via le service
             List<Consultation> consultations = consultationService.obtenirConsultationsParGeneraliste(generalisteId);
 
-            // 5. Préparer les données formatées pour éviter les appels de méthodes dans JSP
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
+            // 5. Préparer les données formatées avec DateUtil
             Map<Integer, String> dateMap = new HashMap<>();
             Map<Integer, String> timeMap = new HashMap<>();
             Map<Integer, String> patientInitialsMap = new HashMap<>();
@@ -71,14 +68,9 @@ public class GeneralisteConsultationsServlet extends HttpServlet {
             for (Consultation consultation : consultations) {
                 int id = consultation.getId();
 
-                // Formater la date et l'heure
-                if (consultation.getDateConsultation() != null) {
-                    dateMap.put(id, consultation.getDateConsultation().format(dateFormatter));
-                    timeMap.put(id, consultation.getDateConsultation().format(timeFormatter));
-                } else {
-                    dateMap.put(id, "-");
-                    timeMap.put(id, "-");
-                }
+                // Utiliser DateUtil pour formater la date et l'heure
+                dateMap.put(id, DateUtil.formatDate(consultation.getDateConsultation()));
+                timeMap.put(id, DateUtil.formatTime(consultation.getDateConsultation()));
 
                 // Préparer les informations du patient
                 if (consultation.getPatient() != null) {

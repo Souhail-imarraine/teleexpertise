@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -48,6 +49,14 @@
                 </svg>
                 Dashboard
             </a>
+
+            <a href="${pageContext.request.contextPath}/generaliste/consultations"
+               class="bg-gray-100 text-black group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                <svg class="text-black mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Consultations
+            </a>
         </div>
     </nav>
 
@@ -71,324 +80,262 @@
     </div>
 </div>
 
-<div id="overlay" class="no-print hidden lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"></div>
+<div id="overlay" class="hidden lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 no-print"></div>
 
 <!-- Main Content -->
 <div class="lg:ml-64">
-    <header class="no-print bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20 no-print">
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">📋 Consultation #12345</h1>
-                    <p class="text-sm text-gray-600 mt-1">Détails de la consultation</p>
+                <div class="flex items-center space-x-4">
+                    <a href="${pageContext.request.contextPath}/generaliste/consultations"
+                       class="text-gray-600 hover:text-black">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">Détail de la Consultation</h1>
                 </div>
-                <div class="flex space-x-3">
-                    <button onclick="window.print()" class="bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-2 rounded-lg flex items-center">
+                <div class="flex items-center space-x-3">
+                    <button onclick="window.print()" class="bg-white border-2 border-gray-300 hover:bg-gray-50 text-gray-700 font-bold px-4 py-2 rounded-lg flex items-center">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                         </svg>
                         Imprimer
                     </button>
-                    <a href="${pageContext.request.contextPath}/generaliste/consultations"
-                       class="bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-2 rounded-lg flex items-center">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                        </svg>
-                        Retour
-                    </a>
                 </div>
             </div>
         </div>
     </header>
 
     <main class="p-4 sm:p-6 lg:p-8">
-        <div class="max-w-5xl mx-auto space-y-6">
-            <!-- Status and Quick Actions -->
-            <div class="no-print bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between">
+        <!-- Message d'erreur -->
+        <c:if test="${not empty errorMessage}">
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <span><c:out value="${errorMessage}"/></span>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty consultation}">
+            <!-- En-tête de la consultation -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center space-x-4">
-                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-purple-100 text-purple-800">
-                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            En attente d'avis spécialiste
-                        </span>
-                        <div class="text-sm text-gray-600">
-                            Créée le <span class="font-bold">16/10/2025 à 09:30</span>
+                        <div class="h-16 w-16 bg-black text-white rounded-full flex items-center justify-center font-bold text-xl">
+                            ${patientInitials}
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">
+                                <c:out value="${consultation.patient.nom} ${consultation.patient.prenom}"/>
+                            </h2>
+                            <p class="text-gray-600">N° Sécurité Sociale: <c:out value="${consultation.patient.numeroSecuriteSociale}"/></p>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <a href="${pageContext.request.contextPath}/generaliste/demander-expertise?consultationId=1"
-                           class="bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg flex items-center">
-                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                            Demander Avis
-                        </a>
-                        <button onclick="completeConsultation()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg flex items-center">
-                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Clôturer
-                        </button>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600 mb-1">Date de consultation</div>
+                        <div class="text-lg font-bold text-gray-900">
+                            ${dateConsultation}
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            ${timeConsultation}
+                        </div>
                     </div>
+                </div>
+
+                <!-- Statut -->
+                <div class="flex items-center space-x-3">
+                    <span class="text-sm font-bold text-gray-700">Statut:</span>
+                    <c:choose>
+                        <c:when test="${consultation.statut == 'EN_COURS'}">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800">
+                                En cours
+                            </span>
+                        </c:when>
+                        <c:when test="${consultation.statut == 'EN_ATTENTE_AVIS_SPECIALISTE'}">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-purple-100 text-purple-800">
+                                En attente d'avis spécialiste
+                            </span>
+                        </c:when>
+                        <c:when test="${consultation.statut == 'TERMINEE'}">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800">
+                                Terminée
+                            </span>
+                        </c:when>
+                    </c:choose>
                 </div>
             </div>
 
-            <!-- Patient Info -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Informations du Patient -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                     Informations Patient
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nom Complet</label>
-                        <p class="text-sm font-bold text-gray-900">Mohammed ALAMI</p>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Date de naissance</label>
+                        <p class="text-gray-900">${dateNaissanceFormatted}</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Date de Naissance</label>
-                        <p class="text-sm font-bold text-gray-900">15/03/1985 (40 ans)</p>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
+                        <p class="text-gray-900"><c:out value="${consultation.patient.telephone}"/></p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">N° Sécurité Sociale</label>
-                        <p class="text-sm font-bold text-gray-900">1234567890123</p>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Adresse</label>
+                        <p class="text-gray-900"><c:out value="${consultation.patient.adresse}"/></p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Téléphone</label>
-                        <p class="text-sm font-bold text-gray-900">+212 6 12 34 56 78</p>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Mutuelle</label>
-                        <p class="text-sm font-bold text-gray-900">CNSS</p>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Groupe Sanguin</label>
-                        <p class="text-sm font-bold text-gray-900">A+</p>
-                    </div>
-                </div>
-
-                <!-- Vital Signs -->
-                <div class="mt-6 pt-6 border-t border-gray-200">
-                    <h3 class="text-sm font-bold text-gray-900 mb-3">Signes Vitaux</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <div class="text-xs text-gray-500 font-bold">Tension Artérielle</div>
-                            <div class="text-lg font-bold text-gray-900">120/80 mmHg</div>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <div class="text-xs text-gray-500 font-bold">Fréquence Cardiaque</div>
-                            <div class="text-lg font-bold text-gray-900">72 bpm</div>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <div class="text-xs text-gray-500 font-bold">Température</div>
-                            <div class="text-lg font-bold text-gray-900">37.2°C</div>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <div class="text-xs text-gray-500 font-bold">Saturation O₂</div>
-                            <div class="text-lg font-bold text-gray-900">98%</div>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <div class="text-xs text-gray-500 font-bold">Poids</div>
-                            <div class="text-lg font-bold text-gray-900">75 kg</div>
-                        </div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Statut</label>
+                        <p class="text-gray-900"><c:out value="${consultation.patient.statut}"/></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Consultation Details -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Signes Vitaux -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    Signes Vitaux
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-1">Tension</div>
+                        <div class="text-xl font-bold text-gray-900"><c:out value="${consultation.patient.tensionArterielle}"/></div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-1">Fréquence Cardiaque</div>
+                        <div class="text-xl font-bold text-gray-900"><c:out value="${consultation.patient.frequenceCardiaque}"/> bpm</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-1">Température</div>
+                        <div class="text-xl font-bold text-gray-900"><c:out value="${consultation.patient.temperature}"/>°C</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-1">Fréquence Respiratoire</div>
+                        <div class="text-xl font-bold text-gray-900"><c:out value="${consultation.patient.frequenceRespiratoire}"/> /min</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Antécédents et Allergies -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Antécédents Médicaux</h3>
+                    <p class="text-gray-700 whitespace-pre-line"><c:out value="${consultation.patient.antecedents}"/></p>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Allergies</h3>
+                    <p class="text-gray-700 whitespace-pre-line"><c:out value="${consultation.patient.allergies}"/></p>
+                </div>
+            </div>
+
+            <!-- Détails de la Consultation -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     Détails de la Consultation
-                </h2>
+                </h3>
 
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Motif de Consultation</label>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <p class="text-gray-900">Douleurs thoraciques récurrentes depuis 3 jours</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Symptômes</label>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <ul class="list-disc list-inside text-gray-900 space-y-1">
-                                <li>Douleurs au niveau du thorax, irradiant vers le bras gauche</li>
-                                <li>Essoufflement à l'effort</li>
-                                <li>Sensation de fatigue inhabituelle</li>
-                                <li>Légers vertiges occasionnels</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Examen Clinique</label>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <p class="text-gray-900 whitespace-pre-line">Inspection: Patient conscient, légèrement anxieux
-Auscultation cardiaque: Rythme régulier, pas de souffle audible
-Auscultation pulmonaire: Murmure vésiculaire normal
-Palpation: Sensibilité au niveau du sternum
-Examen neurologique: Normal</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Observations</label>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <p class="text-gray-900">Patient avec antécédents familiaux de maladies cardiovasculaires. Tabagisme actif (10 cigarettes/jour depuis 15 ans). Stress professionnel important.</p>
-                        </div>
-                    </div>
-
-                    <div id="diagnosticSection">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Diagnostic</label>
-                        <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
-                            <p class="text-yellow-800 flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                </svg>
-                                En attente de l'avis du cardiologue
-                            </p>
-                        </div>
-                    </div>
-
-                    <div id="treatmentSection">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Prescription / Traitement</label>
-                        <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
-                            <p class="text-yellow-800">Prescription en attente de validation après avis spécialiste</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Medical Acts -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                    </svg>
-                    Actes Techniques Médicaux
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-                        <div class="flex items-center">
-                            <svg class="h-6 w-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <div>
-                                <div class="text-sm font-bold text-gray-900">Électrocardiogramme (ECG)</div>
-                                <div class="text-xs text-gray-600">Prescrit - En attente</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-                        <div class="flex items-center">
-                            <svg class="h-6 w-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <div>
-                                <div class="text-sm font-bold text-gray-900">Analyse de sang</div>
-                                <div class="text-xs text-gray-600">Prescrit - En attente</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Expertise Request -->
-            <div class="bg-purple-50 border-2 border-purple-300 rounded-xl shadow-sm p-6">
-                <h2 class="text-xl font-bold text-purple-900 mb-4 flex items-center">
-                    <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    Demande d'Expertise - Cardiologue
-                </h2>
                 <div class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-purple-900 uppercase mb-1">Spécialiste</label>
-                            <p class="text-sm font-bold text-purple-900">Dr. Karim BENJELLOUN - Cardiologue</p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-purple-900 uppercase mb-1">Rendez-vous</label>
-                            <p class="text-sm font-bold text-purple-900">17/10/2025 à 14:00</p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-purple-900 uppercase mb-1">Priorité</label>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
-                                URGENTE
-                            </span>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-purple-900 uppercase mb-1">Tarif</label>
-                            <p class="text-sm font-bold text-purple-900">300 DH</p>
-                        </div>
-                    </div>
                     <div>
-                        <label class="block text-sm font-bold text-purple-900 mb-2">Question posée au spécialiste</label>
-                        <div class="bg-white rounded-lg p-4">
-                            <p class="text-gray-900">Patient de 40 ans présentant des douleurs thoraciques avec irradiation vers le bras gauche, essoufflement à l'effort. Antécédents familiaux cardiovasculaires + tabagisme. ECG et analyses prescrits. Nécessite avis cardiologique urgent pour éliminer syndrome coronarien aigu et orienter prise en charge.</p>
-                        </div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Motif de consultation</label>
+                        <p class="text-gray-900 bg-gray-50 p-4 rounded-lg"><c:out value="${consultation.motif}"/></p>
                     </div>
-                    <div class="bg-yellow-100 border border-yellow-400 rounded-lg p-4">
-                        <p class="text-sm text-yellow-800 flex items-center">
-                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            En attente de la réponse du spécialiste
-                        </p>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Observations</label>
+                        <p class="text-gray-900 bg-gray-50 p-4 rounded-lg whitespace-pre-line"><c:out value="${consultation.observations}"/></p>
+                    </div>
+
+                    <c:if test="${not empty consultation.diagnostic}">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Diagnostic</label>
+                        <p class="text-gray-900 bg-green-50 p-4 rounded-lg border-l-4 border-green-500"><c:out value="${consultation.diagnostic}"/></p>
+                    </div>
+                    </c:if>
+
+                    <c:if test="${not empty consultation.traitement}">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Traitement prescrit</label>
+                        <p class="text-gray-900 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 whitespace-pre-line"><c:out value="${consultation.traitement}"/></p>
+                    </div>
+                    </c:if>
+                </div>
+            </div>
+
+            <!-- Coût de la consultation -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="h-6 w-6 mr-2 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    Coût de la Consultation
+                </h3>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-600 mb-1">Coût base</div>
+                        <div class="text-3xl font-bold text-gray-900"><c:out value="${consultation.coutBase}"/> DH</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600 mb-1">Type</div>
+                        <div class="text-lg font-semibold text-gray-700">Consultation généraliste</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cost Summary -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <h2 class="text-lg font-bold mb-4">Coût Total de la Consultation</h2>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center pb-2">
-                        <span class="text-blue-100">Consultation Généraliste</span>
-                        <span class="font-bold">150 DH</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-2">
-                        <span class="text-blue-100">Expertise Cardiologue</span>
-                        <span class="font-bold">300 DH</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-2 border-b border-blue-400">
-                        <span class="text-blue-100">Actes techniques (ECG + Analyses)</span>
-                        <span class="font-bold">200 DH</span>
-                    </div>
-                    <div class="flex justify-between items-center text-xl pt-2">
-                        <span class="font-bold">TOTAL</span>
-                        <span class="font-bold">650 DH</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Actions -->
+            <div class="no-print flex items-center space-x-3">
+                <c:if test="${consultation.statut == 'EN_COURS'}">
+                    <a href="${pageContext.request.contextPath}/generaliste/demander-expertise?consultationId=${consultation.id}"
+                       class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-lg flex items-center">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Demander un avis spécialiste
+                    </a>
 
-            <!-- Action Buttons -->
-            <div class="no-print flex items-center justify-between gap-4">
+                    <button onclick="cloturer()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg flex items-center">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Clôturer la consultation
+                    </button>
+                </c:if>
+
                 <a href="${pageContext.request.contextPath}/generaliste/consultations"
-                   class="flex-1 bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold px-6 py-3 rounded-lg text-center">
-                    Retour à la liste
+                   class="bg-gray-600 hover:bg-gray-700 text-white font-bold px-6 py-3 rounded-lg flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Retour aux consultations
                 </a>
-                <button onclick="editConsultation()" class="flex-1 bg-gray-700 hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                    Modifier
-                </button>
-                <button onclick="completeConsultation()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-lg flex items-center justify-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Clôturer la Consultation
-                </button>
             </div>
-        </div>
+        </c:if>
+
+        <c:if test="${empty consultation}">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+                <svg class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Consultation introuvable</h3>
+                <p class="text-gray-600 mb-6">La consultation demandée n'existe pas ou vous n'y avez pas accès.</p>
+                <a href="${pageContext.request.contextPath}/generaliste/consultations"
+                   class="inline-block bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-lg">
+                    Retour aux consultations
+                </a>
+            </div>
+        </c:if>
     </main>
 </div>
 
@@ -397,27 +344,26 @@ Examen neurologique: Normal</p>
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
 
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-    });
-
-    overlay.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-    });
-
-    function editConsultation() {
-        alert('Fonction de modification - À implémenter');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
     }
 
-    function completeConsultation() {
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+    }
+
+    function cloturer() {
         if (confirm('Êtes-vous sûr de vouloir clôturer cette consultation ?')) {
-            alert('Consultation clôturée avec succès !');
-            window.location.href = '${pageContext.request.contextPath}/generaliste/consultations';
+            // TODO: Appeler le servlet pour clôturer la consultation
+            alert('Fonctionnalité en cours de développement');
         }
     }
 </script>
 </body>
 </html>
-

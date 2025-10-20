@@ -74,4 +74,36 @@ public class ConsultationDAO extends GenericDAOImpl<Consultation> {
             em.close();
         }
     }
+
+    /**
+     * Trouver une consultation par ID avec tous les détails chargés (patient, généraliste, etc.)
+     * ✅ JOIN FETCH pour éviter LazyInitializationException
+     */
+    public Consultation findByIdWithDetails(Long id) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Consultation> query = em.createQuery(
+                "SELECT c FROM Consultation c " +
+                "JOIN FETCH c.patient " +
+                "JOIN FETCH c.generaliste " +
+                "LEFT JOIN FETCH c.demandeExpertise " +
+                "LEFT JOIN FETCH c.actesTechniques " +
+                "WHERE c.id = :id",
+                Consultation.class
+            );
+            query.setParameter("id", id);
+            Consultation result = query.getSingleResult();
+            System.out.println("✅ DAO: Consultation trouvée avec ID " + id);
+            return result;
+        } catch (jakarta.persistence.NoResultException e) {
+            System.out.println("⚠️ DAO: Aucune consultation trouvée avec ID " + id);
+            return null;
+        } catch (Exception e) {
+            System.out.println("❌ DAO: Erreur lors du chargement de la consultation ID " + id);
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

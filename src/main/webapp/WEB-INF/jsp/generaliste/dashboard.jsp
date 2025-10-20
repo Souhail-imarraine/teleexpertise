@@ -157,14 +157,6 @@
                     <span class="font-bold text-center text-gray-900">Mes demandes d'expertise</span>
                 </a>
 
-                <a href="${pageContext.request.contextPath}/generaliste/demander-expertise"
-                   class="flex flex-col items-center justify-center p-6 bg-white hover:bg-gray-50 border-2 border-gray-300 hover:border-black rounded-xl shadow transform hover:scale-105 transition-all">
-                    <svg class="h-12 w-12 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    <span class="font-bold text-center text-gray-900">Demander une Expertise</span>
-                </a>
-
                 <a href="${pageContext.request.contextPath}/generaliste/consultations"
                    class="flex flex-col items-center justify-center p-6 bg-white hover:bg-gray-50 border-2 border-gray-300 hover:border-black rounded-xl shadow transform hover:scale-105 transition-all">
                     <svg class="h-12 w-12 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,4 +200,3 @@
 </script>
 </body>
 </html>
-

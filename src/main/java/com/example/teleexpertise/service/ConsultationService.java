@@ -117,18 +117,18 @@ public class ConsultationService {
 
     /**
      * Obtenir une consultation par son ID
+     * ✅ Charge toutes les relations (patient, généraliste) pour éviter LazyInitializationException
      */
     public Consultation obtenirConsultationParId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("L'ID de la consultation est requis");
         }
 
-        Optional<Consultation> optionalConsultation = consultationDAO.findById(id);
-        if (!optionalConsultation.isPresent()) {
+        Consultation consultation = consultationDAO.findByIdWithDetails(id);
+        if (consultation == null) {
             throw new IllegalArgumentException("Consultation introuvable avec l'ID: " + id);
         }
-
-        return optionalConsultation.get();
+        return consultation;
     }
 
     /**
